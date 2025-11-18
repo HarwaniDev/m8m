@@ -1,39 +1,19 @@
 "use client"
 
 import {
-    AudioWaveform,
     BadgeCheck,
     Bell,
     BookOpen,
     Bot,
-    ChevronRight,
     ChevronsUpDown,
-    Command,
     CreditCard,
-    Folder,
-    Forward,
-    Frame,
-    GalleryVerticalEnd,
     LogOut,
-    Map,
-    MoreHorizontal,
-    PieChart,
-    Plus,
-    Settings2,
     Sparkles,
     SquareTerminal,
-    Trash2,
     Workflow
 } from "lucide-react"
-
 import * as React from "react"
-
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "~/components/ui/collapsible"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -48,20 +28,14 @@ import {
     SidebarContent,
     SidebarFooter,
     SidebarGroup,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
-    SidebarMenuAction,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
     SidebarRail,
     useSidebar,
 } from "~/components/ui/sidebar"
 
-// This is sample data.
 const data = {
     user: {
         name: "shadcn",
@@ -79,17 +53,20 @@ const data = {
             title: "Executions",
             url: "#",
             icon: Bot,
+            isActive: false
         },
         {
             title: "Credentials",
             url: "#",
             icon: BookOpen,
+            isActive: false
         },
     ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { isMobile, state } = useSidebar();
+    const [navMain, setNavMain] = React.useState(data.navMain);
 
     return (
         <Sidebar collapsible="icon" {...props}>
@@ -108,18 +85,26 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarMenu>
-                        {data.navMain.map((item) => (
-                                <SidebarMenuItem>
-                                        <SidebarMenuButton
-                                            className={item.isActive
-                                                ? "bg-blue-600 text-white border-2 border-black rounded-md"
-                                                : ""}
-                                            tooltip={item.title}
-                                        >
-                                            {item.icon && <item.icon />}
-                                            <span>{item.title}</span>
-                                        </SidebarMenuButton>
-                                </SidebarMenuItem>
+                        {navMain.map((item, key) => (
+                            <SidebarMenuItem key={key}>
+                                <SidebarMenuButton
+                                    className={item.isActive
+                                        ? "bg-blue-600 text-white border-2 border-black rounded-lg"
+                                        : ""}
+                                    tooltip={item.title}
+                                    onClick={() => {
+                                        setNavMain(prev =>
+                                            prev.map((nav, idx) => ({
+                                                ...nav,
+                                                isActive: idx === key
+                                            }))
+                                        )
+                                    }}
+                                >
+                                    {item.icon && <item.icon />}
+                                    <span>{item.title}</span>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
                         ))}
                     </SidebarMenu>
                 </SidebarGroup>
