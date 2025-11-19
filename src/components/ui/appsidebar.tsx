@@ -1,23 +1,21 @@
 "use client"
 
 import {
-    BadgeCheck,
-    Bell,
     BookOpen,
-    Bot,
-    ChevronsUpDown,
-    CreditCard,
+    FileBraces,
+    House,
     LogOut,
-    Sparkles,
+    MonitorCog,
     SquareTerminal,
     Workflow
 } from "lucide-react"
+import { signOut } from "next-auth/react"
+import { usePathname } from "next/navigation"
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
@@ -35,6 +33,7 @@ import {
     SidebarRail,
     useSidebar,
 } from "~/components/ui/sidebar"
+import { useNavigation } from "~/contexts/navigation-context"
 
 const data = {
     user: {
@@ -44,32 +43,51 @@ const data = {
     },
     navMain: [
         {
-            title: "Workflows",
-            url: "#",
-            icon: SquareTerminal,
+            title: "Home",
+            url: "home",
+            icon: House,
             isActive: true,
         },
         {
+            title: "Workflows",
+            url: "workflow",
+            icon: FileBraces,
+            isActive: false,
+        },
+        {
             title: "Executions",
-            url: "#",
-            icon: Bot,
+            url: "execution",
+            icon: MonitorCog,
             isActive: false
         },
         {
             title: "Credentials",
-            url: "#",
+            url: "credentials",
             icon: BookOpen,
             isActive: false
         },
     ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+    user,
+    ...props
+}: React.ComponentProps<typeof Sidebar> & {
+    user?: {
+        name?: string | null
+        email?: string | null
+        image?: string | null
+    }
+}) {
     const { isMobile, state } = useSidebar();
-    const [navMain, setNavMain] = React.useState(data.navMain);
+    const { navMain, setNavMain } = useNavigation();
+
+    React.useEffect(() => {
+        setNavMain(data.navMain);
+    }, []);
 
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar collapsible="icon" variant="inset" {...props}>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
@@ -98,7 +116,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                                 ...nav,
                                                 isActive: idx === key
                                             }))
-                                        )
+                                        );
                                     }}
                                 >
                                     {item.icon && <item.icon />}
@@ -112,82 +130,69 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton
-                                    className="group-data-[state=collapsed]:hover:outline-0 group-data-[state=collapsed]:hover:bg-transparent overflow-visible"
-                                    size="lg"
-                                >
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage
-                                            src="https://github.com/shadcn.png?size=40"
-                                            alt="CN"
-                                        />
-                                        <AvatarFallback>CN</AvatarFallback>
-                                    </Avatar>
-                                    <div className="grid flex-1 text-left text-sm leading-tight">
-                                        <span className="truncate font-heading">
-                                            {data.user.name}
-                                        </span>
-                                        <span className="truncate text-xs">{data.user.email}</span>
-                                    </div>
-                                    <ChevronsUpDown className="ml-auto size-4" />
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                className="w-[--radix-dropdown-menu-trigger-width] min-w-56"
-                                side={isMobile ? "bottom" : "right"}
-                                align="end"
-                                sideOffset={4}
-                            >
-                                <DropdownMenuLabel className="p-0 font-base">
-                                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                        {(user?.email && user?.name && user?.image) ? (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <SidebarMenuButton
+                                        className="group-data-[state=collapsed]:hover:outline-0 group-data-[state=collapsed]:hover:bg-transparent overflow-visible"
+                                        size="lg"
+                                    >
                                         <Avatar className="h-8 w-8">
                                             <AvatarImage
-                                                src="https://github.com/shadcn.png?size=40"
-                                                alt="CN"
+                                                src={user.image || "https://github.com/shadcn.png?size=40"}
+                                                alt={user.name || "User"}
                                             />
-                                            <AvatarFallback>CN</AvatarFallback>
+                                            <AvatarFallback>
+                                                {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || "U"}
+                                            </AvatarFallback>
                                         </Avatar>
                                         <div className="grid flex-1 text-left text-sm leading-tight">
                                             <span className="truncate font-heading">
-                                                {data.user.name}
+                                                {user.name || "User"}
                                             </span>
-                                            <span className="truncate text-xs">
-                                                {data.user.email}
-                                            </span>
+                                            <span className="truncate text-xs">{user.email || ""}</span>
                                         </div>
-                                    </div>
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>
-                                        <Sparkles />
-                                        Upgrade to Pro
+                                    </SidebarMenuButton>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                    className="w-[--radix-dropdown-menu-trigger-width] min-w-56 bg-blue-600 text-white border-black rounded-lg"
+                                    side={isMobile ? "bottom" : "right"}
+                                    align="end"
+                                    sideOffset={4}
+                                >
+                                    <DropdownMenuLabel className="p-0 font-base">
+                                        <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage
+                                                    src={user.image || "https://github.com/shadcn.png?size=40"}
+                                                    alt={user.name || "User"}
+                                                />
+                                                <AvatarFallback className="text-white">
+                                                    {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || "U"}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                                <span className="truncate font-heading">
+                                                    {user.name || "User"}
+                                                </span>
+                                                <span className="truncate text-xs">
+                                                    {user.email || ""}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => signOut()}>
+                                        <LogOut />
+                                        Sign out
                                     </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>
-                                        <BadgeCheck />
-                                        Account
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <CreditCard />
-                                        Billing
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Bell />
-                                        Notifications
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <LogOut />
-                                    Log out
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        ) : (
+                            <div className="w-full flex justify-center p-2">
+                                {/* <SignInComponent /> */}
+                            </div>
+                        )}
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>

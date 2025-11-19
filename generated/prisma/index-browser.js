@@ -166,6 +166,14 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.WorkflowScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -187,7 +195,8 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
   User: 'User',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  Workflow: 'Workflow'
 };
 
 /**
