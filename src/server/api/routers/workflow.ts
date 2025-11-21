@@ -77,6 +77,8 @@ export const workflowRouter = createTRPCRouter({
       return ctx.db.workflow.findMany({
         where: {
           userId: ctx.session.user.id
+        }, orderBy: {
+         createdAt: "desc" 
         }
       })
     })

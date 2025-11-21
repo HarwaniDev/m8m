@@ -1,5 +1,6 @@
 "use client"
 
+import { usePathname } from "next/navigation"
 import * as React from "react"
 
 type NavItem = {
@@ -19,10 +20,14 @@ const NavigationContext = React.createContext<NavigationContextType | undefined>
 
 export function NavigationProvider({ children }: { children: React.ReactNode }) {
     const [navMain, setNavMain] = React.useState<NavItem[]>([])
-
+    const pathname = usePathname();
+    const route = pathname.split("/")[1];
     const activeNavItem = React.useMemo(() => {
-        return navMain.find(item => item.isActive) || null
-    }, [navMain])
+        if (!route) {
+            return null
+        }
+        return navMain.find((item) => item.url === route) || null
+    }, [navMain, route])
 
     return (
         <NavigationContext.Provider value={{ navMain, setNavMain, activeNavItem }}>
