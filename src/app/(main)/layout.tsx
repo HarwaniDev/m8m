@@ -26,7 +26,6 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
                             <SignInComponent />
                         </div>
                     </header>
-                    
                     {children}
                 </SidebarInset>
             </SidebarProvider>
