@@ -6,11 +6,10 @@ import {
     House,
     LogOut,
     MonitorCog,
-    SquareTerminal,
     Workflow
 } from "lucide-react"
 import { signOut } from "next-auth/react"
-import { usePathname } from "next/navigation"
+import Link from "next/link"
 import * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
 import {
@@ -50,13 +49,13 @@ const data = {
         },
         {
             title: "Workflows",
-            url: "workflow",
+            url: "workflows",
             icon: FileBraces,
             isActive: false,
         },
         {
             title: "Executions",
-            url: "execution",
+            url: "executions",
             icon: MonitorCog,
             isActive: false
         },
@@ -105,23 +104,25 @@ export function AppSidebar({
                     <SidebarMenu>
                         {navMain.map((item, key) => (
                             <SidebarMenuItem key={key}>
-                                <SidebarMenuButton
-                                    className={item.isActive
-                                        ? "bg-blue-600 text-white border-2 border-black rounded-lg"
-                                        : ""}
-                                    tooltip={item.title}
-                                    onClick={() => {
-                                        setNavMain(prev =>
-                                            prev.map((nav, idx) => ({
-                                                ...nav,
-                                                isActive: idx === key
-                                            }))
-                                        );
-                                    }}
-                                >
-                                    {item.icon && <item.icon />}
-                                    <span>{item.title}</span>
-                                </SidebarMenuButton>
+                                <Link href={`/${item.url}`}>
+                                    <SidebarMenuButton
+                                        className={item.isActive
+                                            ? "bg-blue-600 text-white border-2 border-black rounded-lg"
+                                            : ""}
+                                        tooltip={item.title}
+                                        onClick={() => {
+                                            setNavMain(prev =>
+                                                prev.map((nav, idx) => ({
+                                                    ...nav,
+                                                    isActive: idx === key
+                                                }))
+                                            );
+                                        }}
+                                    >
+                                        {item.icon && <item.icon />}
+                                        <span>{item.title}</span>
+                                    </SidebarMenuButton>
+                                </Link>
                             </SidebarMenuItem>
                         ))}
                     </SidebarMenu>
@@ -130,7 +131,7 @@ export function AppSidebar({
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        {(user?.email && user?.name && user?.image) ? (
+                        {(user?.email && user?.name && user?.image) && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <SidebarMenuButton
@@ -188,10 +189,6 @@ export function AppSidebar({
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
-                        ) : (
-                            <div className="w-full flex justify-center p-2">
-                                {/* <SignInComponent /> */}
-                            </div>
                         )}
                     </SidebarMenuItem>
                 </SidebarMenu>
