@@ -5,6 +5,7 @@ import {
   protectedProcedure,
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
+import type { Edge, Node } from "@xyflow/react";
 
 export const workflowRouter = createTRPCRouter({
   create: protectedProcedure
@@ -12,7 +13,14 @@ export const workflowRouter = createTRPCRouter({
       return ctx.db.workflow.create({
         data: {
           name: generateSlug(3),
-          userId: ctx.session.user.id
+          userId: ctx.session.user.id,
+          nodes: {
+            create: {
+              type: "INITIAL",
+              position: { x: 0, y: 0 },
+              name: "INITIAL"
+            }
+          }
         }
       });
     }),
@@ -63,12 +71,41 @@ export const workflowRouter = createTRPCRouter({
       id: z.string()
     }))
     .query(async ({ ctx, input }) => {
-      return ctx.db.workflow.findUnique({
+      const workflow = await ctx.db.workflow.findUnique({
         where: {
           id: input.id,
           userId: ctx.session.user.id
+        },
+        include: {
+          nodes: true, connections: true
         }
-      })
+      });
+      if (!workflow) {
+        throw new TRPCError({code: "NOT_FOUND", message: "The workflow you are looking for does not exist."})
+      }
+      // transform db nodes to react-flow nodes
+      const nodes: Node[] = workflow.nodes.map((node) => ({
+        id: node.id,
+        type: node.type,
+        position: node.position as { x: number, y: number },
+        data: (node.data as Record<string, unknown>) || {}
+      }));
+
+      // transform db connections to react-flow edges
+      const edges: Edge[] = workflow.connections.map((connection) => ({
+        id: connection.id,
+        source: connection.fromNodeId,
+        target: connection.toNodeId,
+        sourceHandle: connection.fromOutput,
+        targetHandle: connection.toInput
+      }));
+
+      return {
+        id: workflow.id,
+        name: workflow.name,
+        nodes,
+        edges
+      }
     }),
 
   getMany: protectedProcedure
@@ -78,7 +115,7 @@ export const workflowRouter = createTRPCRouter({
         where: {
           userId: ctx.session.user.id
         }, orderBy: {
-         createdAt: "desc" 
+          createdAt: "desc"
         }
       })
     })
