@@ -1,27 +1,27 @@
-"use client"
-import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation"
 import { AppSidebar } from "~/components/ui/appsidebar";
+import EditorComponent from "~/components/ui/editor";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import WorkflowHeader from "~/components/ui/workflowheader";
 import { NavigationProvider } from "~/contexts/navigation-context";
+import { auth } from "~/server/auth";
 
-const WorkflowComponent = () => {
-    const pathName = usePathname();
-    const workflowId = pathName.split("/workflows/")[1];
-    const session = useSession();
+const WorkflowComponent = async () => {
+    // const pathName = usePathname();
+    // const workflowId = pathName.split("/workflows/")[1];
+    const session = await auth();
     return (
         <NavigationProvider>
             <SidebarProvider>
                 <AppSidebar
-                    user={session?.data?.user ? {
-                        name: session.data.user.name ?? null,
-                        email: session.data.user.email ?? null,
-                        image: session.data.user.image ?? null,
+                    user={session?.user.name ? {
+                        name: session.user.name,
+                        email: session.user.email,
+                        image: session.user.image,
                     } : undefined}
                 />
                 <SidebarInset>
-                    <WorkflowHeader workflowId={workflowId!} />
+                    <WorkflowHeader />
+                    <EditorComponent />
                 </SidebarInset>
             </SidebarProvider>
         </NavigationProvider>
