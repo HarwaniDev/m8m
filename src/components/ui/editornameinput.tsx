@@ -5,9 +5,13 @@ import { Input } from "./input";
 import { api } from "~/trpc/react";
 import { toast } from "sonner";
 import { BreadcrumbItem } from "./breadcrumb";
+import { usePathname } from "next/navigation";
 
-const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
-    const { data } = api.workflow.getOne.useQuery({ id: workflowId });
+const EditorNameInput = () => {
+    const pathName = usePathname();
+    const workflowId = pathName.split("/workflows/")[1];
+
+    const { data } = api.workflow.getOne.useQuery({ id: workflowId! });
     const utils = api.useUtils();
     const updateWorkflow = api.workflow.update.useMutation({
         onMutate: () => {
@@ -21,6 +25,7 @@ const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
                 id: res.toastId
             });
             utils.workflow.getOne.invalidate({ id: workflowId });
+            utils.workflow.getMany.invalidate();
         },
 
         onError: (error, vars, res) => {
@@ -53,7 +58,7 @@ const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
         }
 
         try {
-            await updateWorkflow.mutateAsync({ id: workflowId, name: name! });
+            await updateWorkflow.mutateAsync({ id: workflowId!, name: name! });
         } catch (error) {
             setName(data!.name);
         } finally {
