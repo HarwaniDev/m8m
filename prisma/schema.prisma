@@ -2,16 +2,13 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
-    output   = "../generated/prisma"
+    provider        = "prisma-client-js"
+    output          = "../generated/prisma"
+    previewFeatures = ["queryCompiler", "driverAdapters"]
 }
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
 
@@ -76,11 +73,51 @@ model VerificationToken {
 }
 
 model Workflow {
-    id             String   @id @default(cuid())
-    name           String   @unique
-    createdAt      DateTime @default(now())
-    updatedAt      DateTime @updatedAt
+    id        String   @id @default(cuid())
+    name      String   @unique
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-    userId         String
+    userId String
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    nodes       Node[]
+    connections Connection[]
+}
+
+model Node {
+    id        String   @id @default(cuid())
+    name      String
+    type      NodeType
+    position  Json
+    data      Json     @default("{}")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    workflowId String
+    workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+    outputConnections Connection[] @relation("FromNode")
+    inputConnections  Connection[] @relation("ToNode")
+}
+
+model Connection {
+    id         String   @id @default(cuid())
+    fromNodeId String
+    fromNode   Node     @relation("FromNode", fields: [fromNodeId], references: [id], onDelete: Cascade)
+    toNodeId   String
+    toNode     Node     @relation("ToNode", fields: [toNodeId], references: [id], onDelete: Cascade)
+    workflowId String
+    workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+    fromOutput String   @default("main")
+    toInput    String   @default("main")
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@unique([fromNodeId, toNodeId, fromOutput, toInput])
+}
+
+enum NodeType {
+    INITIAL
 }
