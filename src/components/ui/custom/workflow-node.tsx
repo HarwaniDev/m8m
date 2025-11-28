@@ -35,7 +35,7 @@ export function WorkflowNode({
                 </NodeToolbar>
             }
             {children}
-            {name && (
+            {(showToobar && name) && (
                 <NodeToolbar
                     position={Position.Bottom}
                     isVisible
