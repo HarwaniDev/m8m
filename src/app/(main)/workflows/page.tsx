@@ -2,16 +2,18 @@
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
 import { Plus } from "lucide-react";
-import WorkflowEntity from "~/components/ui/workflow-entity";
+import WorkflowEntity from "~/components/ui/custom/workflow-entity";
 import { toast } from "sonner";
 import { useState } from "react";
 import Link from "next/link";
+import { LoaderThree } from "~/components/ui/loader";
+import EmptyState from "~/components/ui/custom/empty-state";
 
 const WorkflowComponent = () => {
     const utils = api.useUtils();
 
     // TODO:- add loading and error component
-    const { data, isLoading, isError } = api.workflow.getMany.useQuery({});
+    const { data, isLoading, isError, error } = api.workflow.getMany.useQuery({});
     const [isDisabled, setIsDisabled] = useState(false);
     const createWorkflow = api.workflow.create.useMutation({
         onMutate: () => {
@@ -35,6 +37,29 @@ const WorkflowComponent = () => {
             setIsDisabled(false);
         }
     })
+
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <LoaderThree />
+            </div>
+        )
+    }
+    if (isError || data === undefined) {
+        return (
+            <EmptyState
+                title="There has been a error"
+                message={error?.message || 'Cannot find workflows. Please try again later.'}
+            />
+        )
+    } else if (data.length === 0) {
+        return (
+            <EmptyState
+                title="No workflows found"
+                message="Create a workflow now to start you automation journey." />                
+        )
+    }
+
     return (
         <div className="flex w-full flex-col gap-8 px-4 pb-10 pt-6 lg:px-8">
             <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

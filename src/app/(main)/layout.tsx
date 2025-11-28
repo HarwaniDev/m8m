@@ -1,6 +1,6 @@
 import type React from "react";
-import { AppSidebar } from "~/components/ui/appsidebar";
-import MainHeader from "~/components/ui/mainheader";
+import { AppSidebar } from "~/components/ui/custom/appsidebar";
+import MainHeader from "~/components/ui/custom/mainheader";
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar";
 import { NavigationProvider } from "~/contexts/navigation-context";
 import { auth } from "~/server/auth";

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 import { generateSlug } from "random-word-slugs"
 import {
   createTRPCRouter,
@@ -66,6 +66,31 @@ export const workflowRouter = createTRPCRouter({
       });
     }),
 
+  save: protectedProcedure
+    .input(z.object({
+      workflowId: z.string(),
+      userId: z.string(),
+      nodes: z.custom<Node[]>(),
+      edges: z.custom<Edge[]>(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const workflow = await ctx.db.workflow.findUnique({
+        where: {
+          id: input.workflowId,
+          userId: ctx.session.user.id,
+        },
+        include: {
+          nodes: true,
+          connections: true
+        }
+      });
+      if (!workflow) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "The workflow does not exist." });
+      };
+      // transform react-flow nodes back to db compatible
+      // await ctx.db.workflow.
+    }),
+
   getOne: protectedProcedure
     .input(z.object({
       id: z.string()
@@ -81,7 +106,7 @@ export const workflowRouter = createTRPCRouter({
         }
       });
       if (!workflow) {
-        throw new TRPCError({code: "NOT_FOUND", message: "The workflow you are looking for does not exist."})
+        throw new TRPCError({ code: "NOT_FOUND", message: "The workflow you are looking for does not exist." })
       }
       // transform db nodes to react-flow nodes
       const nodes: Node[] = workflow.nodes.map((node) => ({
