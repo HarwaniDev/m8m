@@ -6,6 +6,7 @@ import {
 } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import type { Edge, Node } from "@xyflow/react";
+import type { NodeType } from "generated/prisma";
 
 export const workflowRouter = createTRPCRouter({
   create: protectedProcedure
@@ -68,15 +69,28 @@ export const workflowRouter = createTRPCRouter({
 
   save: protectedProcedure
     .input(z.object({
-      workflowId: z.string(),
-      userId: z.string(),
-      nodes: z.custom<Node[]>(),
-      edges: z.custom<Edge[]>(),
+      id: z.string(),
+      nodes: z.array(
+        z.object({
+          id: z.string(),
+          type: z.string().nullish(),
+          position: z.object({ x: z.number(), y: z.number() }),
+          data: z.record(z.string(), z.any()).optional()
+        }),
+      ),
+      edges: z.array(
+        z.object({
+          source: z.string(),
+          target: z.string(),
+          sourceHandle: z.string().nullish(),
+          targetHandle: z.string().nullish()
+        })
+      )
     }))
     .mutation(async ({ ctx, input }) => {
       const workflow = await ctx.db.workflow.findUnique({
         where: {
-          id: input.workflowId,
+          id: input.id,
           userId: ctx.session.user.id,
         },
         include: {
@@ -87,8 +101,40 @@ export const workflowRouter = createTRPCRouter({
       if (!workflow) {
         throw new TRPCError({ code: "NOT_FOUND", message: "The workflow does not exist." });
       };
-      // transform react-flow nodes back to db compatible
-      // await ctx.db.workflow.
+      return await ctx.db.$transaction(async (tx) => {
+        await tx.node.deleteMany({
+          where: { workflowId: input.id }
+        })
+        await tx.node.createMany({
+          data: input.nodes.map((node) => ({
+            id: node.id,
+            workflowId: input.id,
+            name: node.type || "unknown",
+            type: node.type as NodeType,
+            position: node.position,
+            data: node.data || {}
+          }))
+        }),
+
+          await tx.connection.createMany({
+            data: input.edges.map((edge) => ({
+              workflowId: input.id,
+              fromNodeId: edge.source,
+              toNodeId: edge.target,
+              fromOutput: edge.sourceHandle || "main",
+              toInput: edge.targetHandle || "main"
+            }))
+          }),
+
+          await tx.workflow.update({
+            where: {
+              id: input.id
+            },
+            data: {
+              updatedAt: new Date()
+            }
+          })
+      })
     }),
 
   getOne: protectedProcedure
