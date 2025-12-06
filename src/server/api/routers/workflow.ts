@@ -7,8 +7,31 @@ import {
 import { TRPCError } from "@trpc/server";
 import type { Edge, Node } from "@xyflow/react";
 import type { NodeType } from "generated/prisma";
+import { inngest } from "~/inngest/client";
 
 export const workflowRouter = createTRPCRouter({
+  execute: protectedProcedure
+    .input(z.object({
+      workflowId: z.string()
+    }))
+    .mutation(async ({ ctx, input }) => {
+
+      const workflow = await ctx.db.workflow.findUnique({
+        where: {
+          id: input.workflowId
+        }
+      });
+      if (!workflow) {
+        throw new TRPCError({ message: "Workflow not found.", code: "NOT_FOUND" });
+      }
+
+      await inngest.send({
+        name: "workflows/execute.workflow",
+        data: { workflowId: input.workflowId }
+      });
+
+      return workflow;
+    }),
   create: protectedProcedure
     .mutation(async ({ ctx }) => {
       return ctx.db.workflow.create({
