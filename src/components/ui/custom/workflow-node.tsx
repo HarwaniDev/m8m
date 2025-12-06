@@ -26,10 +26,10 @@ export function WorkflowNode({
         <>
             {showToobar &&
                 <NodeToolbar>
-                    <Button size={"sm"} variant={"neutral"} className="mx-1" onClick={onSettings}>
+                    <Button size={"sm"} variant={"neutral"} className="mx-1 cursor-pointer" onClick={onSettings}>
                         <SettingsIcon className="size-4" />
                     </Button>
-                    <Button size={"sm"} variant={"neutral"} className="mx-1" onClick={onDelete}>
+                    <Button size={"sm"} variant={"neutral"} className="mx-1 cursor-pointer" onClick={onDelete}>
                         <Trash className="size-4" />
                     </Button>
                 </NodeToolbar>

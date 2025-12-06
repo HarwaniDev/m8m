@@ -1,5 +1,5 @@
 "use client"
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { ReactFlow, applyNodeChanges, applyEdgeChanges, addEdge, Background, Controls, MiniMap, Panel, type NodeChange, type EdgeChange, type Connection, type ReactFlowInstance } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { api } from '~/trpc/react';
@@ -8,6 +8,8 @@ import EmptyState from '~/components/ui/custom/empty-state';
 import { nodeComponents } from '~/config/node-component';
 import { AddNodeButton } from './add-node-button';
 import { useEditor } from '~/contexts/editor-context';
+import { NodeType } from 'generated/prisma';
+import ExecuteWorkflowButton from './execute-workflow-button';
 
 export default function EditorComponent({ workflowId }: { workflowId: string }) {
     const { data: workflow, isLoading, error } = api.workflow.getOne.useQuery({ id: workflowId });
@@ -49,6 +51,10 @@ export default function EditorComponent({ workflowId }: { workflowId: string }) 
         [setReactFlowInstance],
     );
 
+    const hasManualTrigger = useMemo(() => {
+        return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER);
+    }, [nodes])
+
     if (isLoading) {
         return <div className='flex items-center justify-center h-full'>
             <LoaderThree />
@@ -65,24 +71,31 @@ export default function EditorComponent({ workflowId }: { workflowId: string }) 
     }
 
     return (
-            <div className='size-full'>
-                <ReactFlow
-                    nodes={nodes}
-                    edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
-                    onConnect={onConnect}
-                    onInit={onInit}
-                    fitView
-                    nodeTypes={nodeComponents}
-                >
-                    <Background />
-                    <Controls />
-                    <Panel position="top-right">
-                        <AddNodeButton />
+        <div className='size-full'>
+            <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onConnect={onConnect}
+                onInit={onInit}
+                fitView
+                nodeTypes={nodeComponents}
+                snapGrid={[10, 10]}
+                snapToGrid
+            >
+                <Background />
+                <Controls />
+                <Panel position="top-right">
+                    <AddNodeButton />
+                </Panel>
+                {hasManualTrigger && (
+                    <Panel position="bottom-center">
+                        <ExecuteWorkflowButton workflowId={workflowId} />
                     </Panel>
-                    <MiniMap />
-                </ReactFlow>
-            </div>
+                )}
+                <MiniMap />
+            </ReactFlow>
+        </div>
     );
 }
