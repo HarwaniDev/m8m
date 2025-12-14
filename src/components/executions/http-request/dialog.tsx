@@ -11,6 +11,9 @@ import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
 
 const formSchema = z.object({
+    variableName: z.string().min(1, { message: "Variable name is required" }).regex(/^[A-Za-z_$][A_Za-z0-9_$]*$/, {
+        message: "Variable name must start with a letter or underscore and should contain only letters, numbers and underscores"
+    }),
     endpoint: z.string().url({ message: "Please entera valid url" }),
     method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
     body: z.string().optional()
@@ -23,12 +26,14 @@ interface Props {
     defaultEndpoint?: string;
     defaultMethod?: "GET" | "PUT" | "POST" | "DELETE" | "PATCH";
     defaultBody?: string;
+    defaultVariableName?: string;
 };
 
 export const HTTPRequestDialog = ({
     open,
     onOpenChange,
     onSubmit,
+    defaultVariableName = "",
     defaultEndpoint = "",
     defaultMethod = "GET",
     defaultBody = ""
@@ -37,11 +42,13 @@ export const HTTPRequestDialog = ({
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            variableName: defaultVariableName,
             endpoint: defaultEndpoint,
             body: defaultBody,
             method: defaultMethod
         }
     });
+    const watchVariableName = form.watch("variableName") || "MyApiCall";
     const watchMethod = form.watch("method");
     const showBody = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
@@ -69,6 +76,26 @@ export const HTTPRequestDialog = ({
                     >
                         <FormField
                             control={form.control}
+                            name="variableName"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Variable Name</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            placeholder={watchVariableName}
+                                            className="focus:border-blue-600 border-3" />
+                                    </FormControl>
+                                    <FormDescription className="text-muted-foreground">
+                                        Use this name to reference the result in other nodes: {`{{${watchVariableName}.httpResponse.data}}`} 
+                                    </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        >
+                        </FormField>
+                        <FormField
+                            control={form.control}
                             name="method"
                             render={({ field }) => (
                                 <FormItem>
@@ -83,11 +110,11 @@ export const HTTPRequestDialog = ({
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent className="bg-white rounded-lg">
-                                            <SelectItem value="GET"     className="cursor-pointer">GET</SelectItem>
-                                            <SelectItem value="POST"    className="cursor-pointer">POST</SelectItem>
-                                            <SelectItem value="PUT"     className="cursor-pointer">PUT</SelectItem>
-                                            <SelectItem value="DELETE"  className="cursor-pointer">DELETE</SelectItem>
-                                            <SelectItem value="PATCH"   className="cursor-pointer">PATCH</SelectItem>
+                                            <SelectItem value="GET" className="cursor-pointer">GET</SelectItem>
+                                            <SelectItem value="POST" className="cursor-pointer">POST</SelectItem>
+                                            <SelectItem value="PUT" className="cursor-pointer">PUT</SelectItem>
+                                            <SelectItem value="DELETE" className="cursor-pointer">DELETE</SelectItem>
+                                            <SelectItem value="PATCH" className="cursor-pointer">PATCH</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <FormDescription className="text-muted-foreground">
@@ -107,7 +134,8 @@ export const HTTPRequestDialog = ({
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder="https://api.example.com/{{previousNodeData}}" />
+                                            placeholder="https://api.example.com/{{previousNodeData}}"
+                                            className="focus:border-blue-600 border-3" />
                                     </FormControl>
                                     <FormDescription className="text-muted-foreground">
                                         Static URL or use {"{{variables}}"} for simple values
@@ -140,7 +168,7 @@ export const HTTPRequestDialog = ({
                             </FormField>
                         }
                         <DialogFooter className="mt-4">
-                            <Button type="submit" className="border-black rounded-lg font-semibold cursor-pointer">
+                            <Button type="submit" className="border-black text-white bg-blue-600 rounded-lg font-semibold cursor-pointer">
                                 Save
                             </Button>
                         </DialogFooter>
