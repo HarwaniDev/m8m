@@ -5,9 +5,17 @@ import { memo, useState } from "react";
 import BaseTriggerNode from "../base-trigger-node";
 import { MousePointerIcon } from "lucide-react";
 import { ManualTriggerDialog } from "./dialog";
+import { useNodeStatus } from "./use-node-status";
+import { fetchManualTriggerFunctionRealtimeToken } from "./actions";
 
 const ManualTriggerNode = memo((props: NodeProps) => {
     const [dialogOpen, setDialogOpen] = useState(false);
+    const nodeStatus = useNodeStatus({
+        nodeId: props.id,
+        channel: "manual-trigger-execution",
+        topic: "status",
+        refreshToken: fetchManualTriggerFunctionRealtimeToken
+    })
 
     return (
         <>
@@ -20,6 +28,7 @@ const ManualTriggerNode = memo((props: NodeProps) => {
                 // description={description}
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
+                status={nodeStatus}
             />
         </>
     )
