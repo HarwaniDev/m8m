@@ -5,8 +5,12 @@ import { memo, useState } from "react";
 import BaseExecutionNode from "../base-execution-node";
 import { GlobeIcon } from "lucide-react";
 import { HTTPRequestDialog } from "./dialog";
+import { useNodeStatus } from "./use-node-status";
+import { httpRequestChannel } from "~/inngest/channels/http-request";
+import { fetchHttpFunctionRealtimeToken } from "./actions";
 
 type HTTPRequestNodeData = {
+    variableName?: string;
     endpoint?: string;
     method?: "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
     body?: string;
@@ -39,9 +43,14 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
             return node;
         }))
     }
-
+    const nodeStatus = useNodeStatus({
+        nodeId: props.id,
+        channel: "http-request-execution",
+        topic: "status",
+        refreshToken: fetchHttpFunctionRealtimeToken
+    })
     const nodeData = props.data;
-    const description = nodeData.endpoint ? `${nodeData.method || "GET"}: ${nodeData.endpoint} `
+    const description = (nodeData.endpoint && nodeData.variableName) ? `${nodeData.variableName}: ${nodeData.endpoint} `
         : "Not configured";
 
     return (
@@ -52,7 +61,9 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
                 onSubmit={handleSubmit}
                 defaultEndpoint={nodeData.endpoint}
                 defaultMethod={nodeData.method}
-                defaultBody={nodeData.body} />
+                defaultBody={nodeData.body}
+                defaultVariableName={nodeData.variableName}
+            />
 
             <BaseExecutionNode
                 {...props}
@@ -62,6 +73,7 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
                 description={description}
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
+                status={nodeStatus}
             />
         </>
     )
