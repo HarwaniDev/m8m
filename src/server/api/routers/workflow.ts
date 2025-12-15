@@ -1,9 +1,6 @@
-import { string, z } from "zod";
+import { z } from "zod";
 import { generateSlug } from "random-word-slugs"
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { TRPCError } from "@trpc/server";
 import type { Edge, Node } from "@xyflow/react";
 import type { NodeType } from "generated/prisma";
@@ -48,7 +45,7 @@ export const workflowRouter = createTRPCRouter({
         }
       });
     }),
-
+  // todo: complete this
   remove: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -60,6 +57,7 @@ export const workflowRouter = createTRPCRouter({
       });
     }),
 
+  // update name of the workflow
   update: protectedProcedure
     .input(z.object({
       id: z.string(),

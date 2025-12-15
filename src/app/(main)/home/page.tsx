@@ -43,7 +43,7 @@ export default function Page() {
     <>
       <div className="flex flex-col justify-center items-center gap-48 p-4 m-4 pt-0">
         <span className="font-bold text-4xl">
-          Welcome {session?.data?.user.name?.split(" ")[0]}! 👋
+          Welcome {session?.data?.user.name ? session.data.user.name.split(" ")[0] : "to m8m"}! 👋
         </span>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4 w-full">
           <Button className="border-2 flex-col font-semibold cursor-pointer border-black border-dotted rounded-lg flex items-center justify-center shadow-lg min-w-[180px] min-h-[120px] sm:min-w-48 sm:min-h-48 w-full max-w-xs sm:w-auto text-center"

@@ -5,11 +5,16 @@ import { memo, useState } from "react";
 import BaseTriggerNode from "../base-trigger-node";
 import { GoogleFormTriggerDialog } from "./dialog";
 import { useNodeStatus } from "./use-node-status";
-import { fetchManualTriggerFunctionRealtimeToken } from "./actions";
+import { fetchGoogleFormTriggerFunctionRealtimeToken } from "./actions";
 
 const GoogleFormTriggerNode = memo((props: NodeProps) => {
     const [dialogOpen, setDialogOpen] = useState(false);
-    const nodeStatus = "initial"
+    const nodeStatus = useNodeStatus({
+        nodeId: props.id,
+        channel: "google-form-trigger-execution",
+        topic: "status",
+        refreshToken: fetchGoogleFormTriggerFunctionRealtimeToken
+    })
 
     return (
         <>

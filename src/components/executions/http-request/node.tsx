@@ -6,7 +6,6 @@ import BaseExecutionNode from "../base-execution-node";
 import { GlobeIcon } from "lucide-react";
 import { HTTPRequestDialog } from "./dialog";
 import { useNodeStatus } from "./use-node-status";
-import { httpRequestChannel } from "~/inngest/channels/http-request";
 import { fetchHttpFunctionRealtimeToken } from "./actions";
 
 type HTTPRequestNodeData = {
