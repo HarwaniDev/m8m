@@ -123,4 +123,5 @@ enum NodeType {
     HTTP_REQUEST
     MANUAL_TRIGGER
     GOOGLE_FORM_TRIGGER
+    GEMINI
 }

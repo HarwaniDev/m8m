@@ -20,13 +20,13 @@ const triggerNodes: NodeTypeOption[] = [
     {
         type: NodeType.MANUAL_TRIGGER,
         label: "Trigger manually",
-        description: "This node is used to start the workflow manually. Great for quickly getting of the ground.",
+        description: "This node is used to start the workflow manually. Great for quickly getting of the ground",
         icon: MousePointerIcon
     },
     {
         type: NodeType.GOOGLE_FORM_TRIGGER,
         label: "Google Form",
-        description: "Runs the flow when google form is submitted.",
+        description: "Runs the flow when google form is submitted",
         icon: "/googleform.svg"
     }
 ]
@@ -35,8 +35,14 @@ const executionNodes: NodeTypeOption[] = [
     {
         type: NodeType.HTTP_REQUEST,
         label: "HTTP Request",
-        description: "Makes an HTTP request.",
+        description: "Makes an HTTP request",
         icon: GlobeIcon
+    },
+    {
+        type: NodeType.GEMINI,
+        label: "Gemini",
+        description: "Use the Gemini model",
+        icon: "/gemini.svg"
     }
 ]
 
@@ -136,8 +142,13 @@ const NodeSelector = ({ children, open, setOpen }: { children: ReactNode, open: 
                             >
                                 <div>
                                     {typeof Icon === "string" ? (
-                                        <img src={Icon} alt={node.label}
-                                            className="size-5 object-contain rounded-sm" />
+                                        <div className="flex items-center justify-baseline h-auto">
+                                        <img src={Icon} alt={node.label} className="size-8 mr-7 object-contain rounded-sm" />
+                                        <div className="flex-col">
+                                            <p className="font-semibold">{node.label}</p>
+                                            <p className="font-light text-foreground">{node.description}</p>
+                                        </div>
+                                    </div>
                                     ) : (
                                         <div className="flex items-center justify-baseline h-auto">
                                             <Icon className="size-5 mr-7" />

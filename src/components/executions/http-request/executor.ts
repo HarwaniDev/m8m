@@ -24,28 +24,26 @@ export const httpRequestExecutor: NodeExecutor<httpRequestData> = async ({
     step,
     publish
 }) => {
-
-    await publish(httpRequestChannel().status({
-        nodeId,
-        status: "loading"
-    }));
-
-    if (!data.endpoint) {
-        await publish(httpRequestChannel().status({
-            nodeId,
-            status: "error"
-        }));
-        throw new NonRetriableError("HTTP request node: no endpoint configured");
-    }
-    if (!data.variableName) {
-        await publish(httpRequestChannel().status({
-            nodeId,
-            status: "error"
-        }));
-        throw new NonRetriableError("Variable name not configured");
-    }
     try {
+        await publish(httpRequestChannel().status({
+            nodeId,
+            status: "loading"
+        }));
         const result = await step.run("http-request", async () => {
+            if (!data.endpoint) {
+                await publish(httpRequestChannel().status({
+                    nodeId,
+                    status: "error"
+                }));
+                throw new NonRetriableError("HTTP request node: no endpoint configured");
+            }
+            if (!data.variableName) {
+                await publish(httpRequestChannel().status({
+                    nodeId,
+                    status: "error"
+                }));
+                throw new NonRetriableError("Variable name not configured");
+            }
             // handlebars will help to populate the endpoint with context from previous nodes
             const endpoint = Handlebars.compile(data.endpoint)(context);
             const method = data.method || "GET";
@@ -72,20 +70,14 @@ export const httpRequestExecutor: NodeExecutor<httpRequestData> = async ({
                     data: response.data
                 }
             }
-            if (data.variableName) {
-                await publish(httpRequestChannel().status({
-                    nodeId,
-                    status: "success"
-                }));
-                return {
-                    ...context,
-                    [data.variableName]: responsePayload
-                }
-            };
+            await publish(httpRequestChannel().status({
+                nodeId,
+                status: "success"
+            }));
             return {
                 ...context,
-                ...responsePayload
-            };
+                [data.variableName]: responsePayload
+            }
         });
         return result;
     } catch (error) {
