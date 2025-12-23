@@ -105,7 +105,7 @@ export const HTTPRequestDialog = ({
                                         defaultValue={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className="w-full cursor-pointer">
+                                            <SelectTrigger className="w-full cursor-pointer border-2 data-[state=open]:border-blue-600">
                                                 <SelectValue placeholder={"Select a method"} />
                                             </SelectTrigger>
                                         </FormControl>
