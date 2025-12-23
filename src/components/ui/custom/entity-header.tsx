@@ -5,7 +5,7 @@ interface HeaderProps {
     title: string;
     description: string;
     buttonTitle: string;
-    disabled: boolean
+    disabled?: boolean
     onNew: () => void
 }
 export const EntityHeader = ({title, description, buttonTitle, disabled, onNew}: HeaderProps) => {
