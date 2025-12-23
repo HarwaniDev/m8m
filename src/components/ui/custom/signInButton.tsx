@@ -11,7 +11,7 @@ export default function signInComponent() {
                     Loading
                 </Button>
                 :
-                <Button variant={"default"} className="text-white font-semibold bg-blue-600 hover:bg-blue-500 shadow-lg border-black rounded-lg"
+                <Button variant={"default"} className="text-white font-semibold bg-blue-600 cursor-pointer hover:bg-blue-500 shadow-lg border-black rounded-lg"
                     onClick={async () => user.status === "authenticated" ? await signOut({
                         redirect: false
                     }) : await signIn("google")}>

@@ -1,9 +1,20 @@
-const CredentialComponent = () => {
+import { Suspense } from "react";
+import { HydrateClient } from "~/trpc/server";
+import { CredentialsList } from "./credentials";
+import { prefetchCredentials } from "./prefetch";
+import { ErrorBoundary } from "react-error-boundary"
+import { LoaderThree } from "~/components/ui/loader";
+const CredentialComponent = async () => {
+    prefetchCredentials();
+
     return (
-        <div className="flex flex-col justify-center items-center gap-48 p-4 m-4 pt-0">
-            <span className="font-bold text-4xl">Credentials</span>
-            <p>Credential content goes here</p>
-        </div>
+        <HydrateClient>
+            <ErrorBoundary fallback={<>error...</>}>
+                <Suspense fallback={<div className="flex items-center justify-center h-full"> <LoaderThree /> </div>}>
+                    <CredentialsList />
+                </Suspense>
+            </ErrorBoundary>
+        </HydrateClient>
     )
 }
 

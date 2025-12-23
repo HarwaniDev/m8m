@@ -2,9 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    output          = "../generated/prisma"
-    previewFeatures = ["queryCompiler", "driverAdapters"]
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
 }
 
 datasource db {
@@ -53,15 +52,16 @@ model Session {
 }
 
 model User {
-    id            String     @id @default(cuid())
+    id            String       @id @default(cuid())
     name          String?
-    email         String?    @unique
+    email         String?      @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     workflows     Workflow[]
+    credentials   Credential[]
 }
 
 model VerificationToken {
@@ -97,6 +97,8 @@ model Node {
     workflowId String
     workflow   Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
+    credentialId      String?
+    credential        Credential?  @relation(fields: [credentialId], references: [id], onDelete: SetNull)
     outputConnections Connection[] @relation("FromNode")
     inputConnections  Connection[] @relation("ToNode")
 }
@@ -116,6 +118,24 @@ model Connection {
     updatedAt  DateTime @updatedAt
 
     @@unique([fromNodeId, toNodeId, fromOutput, toInput])
+}
+
+model Credential {
+    id        String         @id @default(cuid())
+    name      String
+    value     String
+    type      CredentialType
+    createdAt DateTime       @default(now())
+    updatedAt DateTime       @updatedAt
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    Node Node[]
+}
+
+enum CredentialType {
+    GEMINI
 }
 
 enum NodeType {

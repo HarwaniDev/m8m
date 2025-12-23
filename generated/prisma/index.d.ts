@@ -53,12 +53,24 @@ export type Node = $Result.DefaultSelection<Prisma.$NodePayload>
  * 
  */
 export type Connection = $Result.DefaultSelection<Prisma.$ConnectionPayload>
+/**
+ * Model Credential
+ * 
+ */
+export type Credential = $Result.DefaultSelection<Prisma.$CredentialPayload>
 
 /**
  * Enums
  */
 export namespace $Enums {
-  export const NodeType: {
+  export const CredentialType: {
+  GEMINI: 'GEMINI'
+};
+
+export type CredentialType = (typeof CredentialType)[keyof typeof CredentialType]
+
+
+export const NodeType: {
   INITIAL: 'INITIAL',
   HTTP_REQUEST: 'HTTP_REQUEST',
   MANUAL_TRIGGER: 'MANUAL_TRIGGER',
@@ -69,6 +81,10 @@ export namespace $Enums {
 export type NodeType = (typeof NodeType)[keyof typeof NodeType]
 
 }
+
+export type CredentialType = $Enums.CredentialType
+
+export const CredentialType: typeof $Enums.CredentialType
 
 export type NodeType = $Enums.NodeType
 
@@ -271,6 +287,16 @@ export class PrismaClient<
     * ```
     */
   get connection(): Prisma.ConnectionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.credential`: Exposes CRUD operations for the **Credential** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Credentials
+    * const credentials = await prisma.credential.findMany()
+    * ```
+    */
+  get credential(): Prisma.CredentialDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -719,7 +745,8 @@ export namespace Prisma {
     VerificationToken: 'VerificationToken',
     Workflow: 'Workflow',
     Node: 'Node',
-    Connection: 'Connection'
+    Connection: 'Connection',
+    Credential: 'Credential'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -738,7 +765,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "account" | "session" | "user" | "verificationToken" | "workflow" | "node" | "connection"
+      modelProps: "post" | "account" | "session" | "user" | "verificationToken" | "workflow" | "node" | "connection" | "credential"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1334,6 +1361,80 @@ export namespace Prisma {
           }
         }
       }
+      Credential: {
+        payload: Prisma.$CredentialPayload<ExtArgs>
+        fields: Prisma.CredentialFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CredentialFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CredentialFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          findFirst: {
+            args: Prisma.CredentialFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CredentialFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          findMany: {
+            args: Prisma.CredentialFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>[]
+          }
+          create: {
+            args: Prisma.CredentialCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          createMany: {
+            args: Prisma.CredentialCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CredentialCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>[]
+          }
+          delete: {
+            args: Prisma.CredentialDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          update: {
+            args: Prisma.CredentialUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          deleteMany: {
+            args: Prisma.CredentialDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CredentialUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CredentialUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>[]
+          }
+          upsert: {
+            args: Prisma.CredentialUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CredentialPayload>
+          }
+          aggregate: {
+            args: Prisma.CredentialAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCredential>
+          }
+          groupBy: {
+            args: Prisma.CredentialGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CredentialGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CredentialCountArgs<ExtArgs>
+            result: $Utils.Optional<CredentialCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1438,6 +1539,7 @@ export namespace Prisma {
     workflow?: WorkflowOmit
     node?: NodeOmit
     connection?: ConnectionOmit
+    credential?: CredentialOmit
   }
 
   /* Types for Logging */
@@ -1522,6 +1624,7 @@ export namespace Prisma {
     sessions: number
     posts: number
     workflows: number
+    credentials: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1529,6 +1632,7 @@ export namespace Prisma {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
     workflows?: boolean | UserCountOutputTypeCountWorkflowsArgs
+    credentials?: boolean | UserCountOutputTypeCountCredentialsArgs
   }
 
   // Custom InputTypes
@@ -1568,6 +1672,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountWorkflowsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: WorkflowWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountCredentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CredentialWhereInput
   }
 
 
@@ -1648,6 +1759,37 @@ export namespace Prisma {
    */
   export type NodeCountOutputTypeCountInputConnectionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ConnectionWhereInput
+  }
+
+
+  /**
+   * Count Type CredentialCountOutputType
+   */
+
+  export type CredentialCountOutputType = {
+    Node: number
+  }
+
+  export type CredentialCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    Node?: boolean | CredentialCountOutputTypeCountNodeArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CredentialCountOutputType without action
+   */
+  export type CredentialCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CredentialCountOutputType
+     */
+    select?: CredentialCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CredentialCountOutputType without action
+   */
+  export type CredentialCountOutputTypeCountNodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NodeWhereInput
   }
 
 
@@ -5160,6 +5302,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     workflows?: boolean | User$workflowsArgs<ExtArgs>
+    credentials?: boolean | User$credentialsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5193,6 +5336,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     workflows?: boolean | User$workflowsArgs<ExtArgs>
+    credentials?: boolean | User$credentialsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5205,6 +5349,7 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
       workflows: Prisma.$WorkflowPayload<ExtArgs>[]
+      credentials: Prisma.$CredentialPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5610,6 +5755,7 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     workflows<T extends User$workflowsArgs<ExtArgs> = {}>(args?: Subset<T, User$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    credentials<T extends User$credentialsArgs<ExtArgs> = {}>(args?: Subset<T, User$credentialsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6125,6 +6271,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: WorkflowScalarFieldEnum | WorkflowScalarFieldEnum[]
+  }
+
+  /**
+   * User.credentials
+   */
+  export type User$credentialsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    where?: CredentialWhereInput
+    orderBy?: CredentialOrderByWithRelationInput | CredentialOrderByWithRelationInput[]
+    cursor?: CredentialWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CredentialScalarFieldEnum | CredentialScalarFieldEnum[]
   }
 
   /**
@@ -8248,6 +8418,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     workflowId: string | null
+    credentialId: string | null
   }
 
   export type NodeMaxAggregateOutputType = {
@@ -8257,6 +8428,7 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     workflowId: string | null
+    credentialId: string | null
   }
 
   export type NodeCountAggregateOutputType = {
@@ -8268,6 +8440,7 @@ export namespace Prisma {
     createdAt: number
     updatedAt: number
     workflowId: number
+    credentialId: number
     _all: number
   }
 
@@ -8279,6 +8452,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     workflowId?: true
+    credentialId?: true
   }
 
   export type NodeMaxAggregateInputType = {
@@ -8288,6 +8462,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     workflowId?: true
+    credentialId?: true
   }
 
   export type NodeCountAggregateInputType = {
@@ -8299,6 +8474,7 @@ export namespace Prisma {
     createdAt?: true
     updatedAt?: true
     workflowId?: true
+    credentialId?: true
     _all?: true
   }
 
@@ -8383,6 +8559,7 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     workflowId: string
+    credentialId: string | null
     _count: NodeCountAggregateOutputType | null
     _min: NodeMinAggregateOutputType | null
     _max: NodeMaxAggregateOutputType | null
@@ -8411,7 +8588,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     workflowId?: boolean
+    credentialId?: boolean
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
     outputConnections?: boolean | Node$outputConnectionsArgs<ExtArgs>
     inputConnections?: boolean | Node$inputConnectionsArgs<ExtArgs>
     _count?: boolean | NodeCountOutputTypeDefaultArgs<ExtArgs>
@@ -8426,7 +8605,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     workflowId?: boolean
+    credentialId?: boolean
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
   }, ExtArgs["result"]["node"]>
 
   export type NodeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8438,7 +8619,9 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     workflowId?: boolean
+    credentialId?: boolean
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
   }, ExtArgs["result"]["node"]>
 
   export type NodeSelectScalar = {
@@ -8450,26 +8633,31 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     workflowId?: boolean
+    credentialId?: boolean
   }
 
-  export type NodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "position" | "data" | "createdAt" | "updatedAt" | "workflowId", ExtArgs["result"]["node"]>
+  export type NodeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "position" | "data" | "createdAt" | "updatedAt" | "workflowId" | "credentialId", ExtArgs["result"]["node"]>
   export type NodeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
     outputConnections?: boolean | Node$outputConnectionsArgs<ExtArgs>
     inputConnections?: boolean | Node$inputConnectionsArgs<ExtArgs>
     _count?: boolean | NodeCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type NodeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
   }
   export type NodeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workflow?: boolean | WorkflowDefaultArgs<ExtArgs>
+    credential?: boolean | Node$credentialArgs<ExtArgs>
   }
 
   export type $NodePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Node"
     objects: {
       workflow: Prisma.$WorkflowPayload<ExtArgs>
+      credential: Prisma.$CredentialPayload<ExtArgs> | null
       outputConnections: Prisma.$ConnectionPayload<ExtArgs>[]
       inputConnections: Prisma.$ConnectionPayload<ExtArgs>[]
     }
@@ -8482,6 +8670,7 @@ export namespace Prisma {
       createdAt: Date
       updatedAt: Date
       workflowId: string
+      credentialId: string | null
     }, ExtArgs["result"]["node"]>
     composites: {}
   }
@@ -8877,6 +9066,7 @@ export namespace Prisma {
   export interface Prisma__NodeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     workflow<T extends WorkflowDefaultArgs<ExtArgs> = {}>(args?: Subset<T, WorkflowDefaultArgs<ExtArgs>>): Prisma__WorkflowClient<$Result.GetResult<Prisma.$WorkflowPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    credential<T extends Node$credentialArgs<ExtArgs> = {}>(args?: Subset<T, Node$credentialArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     outputConnections<T extends Node$outputConnectionsArgs<ExtArgs> = {}>(args?: Subset<T, Node$outputConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     inputConnections<T extends Node$inputConnectionsArgs<ExtArgs> = {}>(args?: Subset<T, Node$inputConnectionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConnectionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -8916,6 +9106,7 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"Node", 'DateTime'>
     readonly updatedAt: FieldRef<"Node", 'DateTime'>
     readonly workflowId: FieldRef<"Node", 'String'>
+    readonly credentialId: FieldRef<"Node", 'String'>
   }
     
 
@@ -9309,6 +9500,25 @@ export namespace Prisma {
      * Limit how many Nodes to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Node.credential
+   */
+  export type Node$credentialArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    where?: CredentialWhereInput
   }
 
   /**
@@ -10492,6 +10702,1120 @@ export namespace Prisma {
 
 
   /**
+   * Model Credential
+   */
+
+  export type AggregateCredential = {
+    _count: CredentialCountAggregateOutputType | null
+    _min: CredentialMinAggregateOutputType | null
+    _max: CredentialMaxAggregateOutputType | null
+  }
+
+  export type CredentialMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    value: string | null
+    type: $Enums.CredentialType | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: string | null
+  }
+
+  export type CredentialMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    value: string | null
+    type: $Enums.CredentialType | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    userId: string | null
+  }
+
+  export type CredentialCountAggregateOutputType = {
+    id: number
+    name: number
+    value: number
+    type: number
+    createdAt: number
+    updatedAt: number
+    userId: number
+    _all: number
+  }
+
+
+  export type CredentialMinAggregateInputType = {
+    id?: true
+    name?: true
+    value?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+  }
+
+  export type CredentialMaxAggregateInputType = {
+    id?: true
+    name?: true
+    value?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+  }
+
+  export type CredentialCountAggregateInputType = {
+    id?: true
+    name?: true
+    value?: true
+    type?: true
+    createdAt?: true
+    updatedAt?: true
+    userId?: true
+    _all?: true
+  }
+
+  export type CredentialAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Credential to aggregate.
+     */
+    where?: CredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Credentials to fetch.
+     */
+    orderBy?: CredentialOrderByWithRelationInput | CredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Credentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Credentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Credentials
+    **/
+    _count?: true | CredentialCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CredentialMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CredentialMaxAggregateInputType
+  }
+
+  export type GetCredentialAggregateType<T extends CredentialAggregateArgs> = {
+        [P in keyof T & keyof AggregateCredential]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCredential[P]>
+      : GetScalarType<T[P], AggregateCredential[P]>
+  }
+
+
+
+
+  export type CredentialGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CredentialWhereInput
+    orderBy?: CredentialOrderByWithAggregationInput | CredentialOrderByWithAggregationInput[]
+    by: CredentialScalarFieldEnum[] | CredentialScalarFieldEnum
+    having?: CredentialScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CredentialCountAggregateInputType | true
+    _min?: CredentialMinAggregateInputType
+    _max?: CredentialMaxAggregateInputType
+  }
+
+  export type CredentialGroupByOutputType = {
+    id: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt: Date
+    updatedAt: Date
+    userId: string
+    _count: CredentialCountAggregateOutputType | null
+    _min: CredentialMinAggregateOutputType | null
+    _max: CredentialMaxAggregateOutputType | null
+  }
+
+  type GetCredentialGroupByPayload<T extends CredentialGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CredentialGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CredentialGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CredentialGroupByOutputType[P]>
+            : GetScalarType<T[P], CredentialGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CredentialSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    value?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    Node?: boolean | Credential$NodeArgs<ExtArgs>
+    _count?: boolean | CredentialCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["credential"]>
+
+  export type CredentialSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    value?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["credential"]>
+
+  export type CredentialSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    value?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["credential"]>
+
+  export type CredentialSelectScalar = {
+    id?: boolean
+    name?: boolean
+    value?: boolean
+    type?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    userId?: boolean
+  }
+
+  export type CredentialOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "value" | "type" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["credential"]>
+  export type CredentialInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    Node?: boolean | Credential$NodeArgs<ExtArgs>
+    _count?: boolean | CredentialCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type CredentialIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CredentialIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CredentialPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Credential"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      Node: Prisma.$NodePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      value: string
+      type: $Enums.CredentialType
+      createdAt: Date
+      updatedAt: Date
+      userId: string
+    }, ExtArgs["result"]["credential"]>
+    composites: {}
+  }
+
+  type CredentialGetPayload<S extends boolean | null | undefined | CredentialDefaultArgs> = $Result.GetResult<Prisma.$CredentialPayload, S>
+
+  type CredentialCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CredentialFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CredentialCountAggregateInputType | true
+    }
+
+  export interface CredentialDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Credential'], meta: { name: 'Credential' } }
+    /**
+     * Find zero or one Credential that matches the filter.
+     * @param {CredentialFindUniqueArgs} args - Arguments to find a Credential
+     * @example
+     * // Get one Credential
+     * const credential = await prisma.credential.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CredentialFindUniqueArgs>(args: SelectSubset<T, CredentialFindUniqueArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Credential that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CredentialFindUniqueOrThrowArgs} args - Arguments to find a Credential
+     * @example
+     * // Get one Credential
+     * const credential = await prisma.credential.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CredentialFindUniqueOrThrowArgs>(args: SelectSubset<T, CredentialFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Credential that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialFindFirstArgs} args - Arguments to find a Credential
+     * @example
+     * // Get one Credential
+     * const credential = await prisma.credential.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CredentialFindFirstArgs>(args?: SelectSubset<T, CredentialFindFirstArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Credential that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialFindFirstOrThrowArgs} args - Arguments to find a Credential
+     * @example
+     * // Get one Credential
+     * const credential = await prisma.credential.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CredentialFindFirstOrThrowArgs>(args?: SelectSubset<T, CredentialFindFirstOrThrowArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Credentials that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Credentials
+     * const credentials = await prisma.credential.findMany()
+     * 
+     * // Get first 10 Credentials
+     * const credentials = await prisma.credential.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const credentialWithIdOnly = await prisma.credential.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CredentialFindManyArgs>(args?: SelectSubset<T, CredentialFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Credential.
+     * @param {CredentialCreateArgs} args - Arguments to create a Credential.
+     * @example
+     * // Create one Credential
+     * const Credential = await prisma.credential.create({
+     *   data: {
+     *     // ... data to create a Credential
+     *   }
+     * })
+     * 
+     */
+    create<T extends CredentialCreateArgs>(args: SelectSubset<T, CredentialCreateArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Credentials.
+     * @param {CredentialCreateManyArgs} args - Arguments to create many Credentials.
+     * @example
+     * // Create many Credentials
+     * const credential = await prisma.credential.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CredentialCreateManyArgs>(args?: SelectSubset<T, CredentialCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Credentials and returns the data saved in the database.
+     * @param {CredentialCreateManyAndReturnArgs} args - Arguments to create many Credentials.
+     * @example
+     * // Create many Credentials
+     * const credential = await prisma.credential.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Credentials and only return the `id`
+     * const credentialWithIdOnly = await prisma.credential.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CredentialCreateManyAndReturnArgs>(args?: SelectSubset<T, CredentialCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Credential.
+     * @param {CredentialDeleteArgs} args - Arguments to delete one Credential.
+     * @example
+     * // Delete one Credential
+     * const Credential = await prisma.credential.delete({
+     *   where: {
+     *     // ... filter to delete one Credential
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CredentialDeleteArgs>(args: SelectSubset<T, CredentialDeleteArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Credential.
+     * @param {CredentialUpdateArgs} args - Arguments to update one Credential.
+     * @example
+     * // Update one Credential
+     * const credential = await prisma.credential.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CredentialUpdateArgs>(args: SelectSubset<T, CredentialUpdateArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Credentials.
+     * @param {CredentialDeleteManyArgs} args - Arguments to filter Credentials to delete.
+     * @example
+     * // Delete a few Credentials
+     * const { count } = await prisma.credential.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CredentialDeleteManyArgs>(args?: SelectSubset<T, CredentialDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Credentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Credentials
+     * const credential = await prisma.credential.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CredentialUpdateManyArgs>(args: SelectSubset<T, CredentialUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Credentials and returns the data updated in the database.
+     * @param {CredentialUpdateManyAndReturnArgs} args - Arguments to update many Credentials.
+     * @example
+     * // Update many Credentials
+     * const credential = await prisma.credential.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Credentials and only return the `id`
+     * const credentialWithIdOnly = await prisma.credential.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CredentialUpdateManyAndReturnArgs>(args: SelectSubset<T, CredentialUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Credential.
+     * @param {CredentialUpsertArgs} args - Arguments to update or create a Credential.
+     * @example
+     * // Update or create a Credential
+     * const credential = await prisma.credential.upsert({
+     *   create: {
+     *     // ... data to create a Credential
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Credential we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CredentialUpsertArgs>(args: SelectSubset<T, CredentialUpsertArgs<ExtArgs>>): Prisma__CredentialClient<$Result.GetResult<Prisma.$CredentialPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Credentials.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialCountArgs} args - Arguments to filter Credentials to count.
+     * @example
+     * // Count the number of Credentials
+     * const count = await prisma.credential.count({
+     *   where: {
+     *     // ... the filter for the Credentials we want to count
+     *   }
+     * })
+    **/
+    count<T extends CredentialCountArgs>(
+      args?: Subset<T, CredentialCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CredentialCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Credential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CredentialAggregateArgs>(args: Subset<T, CredentialAggregateArgs>): Prisma.PrismaPromise<GetCredentialAggregateType<T>>
+
+    /**
+     * Group by Credential.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CredentialGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CredentialGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CredentialGroupByArgs['orderBy'] }
+        : { orderBy?: CredentialGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CredentialGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCredentialGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Credential model
+   */
+  readonly fields: CredentialFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Credential.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CredentialClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    Node<T extends Credential$NodeArgs<ExtArgs> = {}>(args?: Subset<T, Credential$NodeArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NodePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Credential model
+   */
+  interface CredentialFieldRefs {
+    readonly id: FieldRef<"Credential", 'String'>
+    readonly name: FieldRef<"Credential", 'String'>
+    readonly value: FieldRef<"Credential", 'String'>
+    readonly type: FieldRef<"Credential", 'CredentialType'>
+    readonly createdAt: FieldRef<"Credential", 'DateTime'>
+    readonly updatedAt: FieldRef<"Credential", 'DateTime'>
+    readonly userId: FieldRef<"Credential", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Credential findUnique
+   */
+  export type CredentialFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which Credential to fetch.
+     */
+    where: CredentialWhereUniqueInput
+  }
+
+  /**
+   * Credential findUniqueOrThrow
+   */
+  export type CredentialFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which Credential to fetch.
+     */
+    where: CredentialWhereUniqueInput
+  }
+
+  /**
+   * Credential findFirst
+   */
+  export type CredentialFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which Credential to fetch.
+     */
+    where?: CredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Credentials to fetch.
+     */
+    orderBy?: CredentialOrderByWithRelationInput | CredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Credentials.
+     */
+    cursor?: CredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Credentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Credentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Credentials.
+     */
+    distinct?: CredentialScalarFieldEnum | CredentialScalarFieldEnum[]
+  }
+
+  /**
+   * Credential findFirstOrThrow
+   */
+  export type CredentialFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which Credential to fetch.
+     */
+    where?: CredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Credentials to fetch.
+     */
+    orderBy?: CredentialOrderByWithRelationInput | CredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Credentials.
+     */
+    cursor?: CredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Credentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Credentials.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Credentials.
+     */
+    distinct?: CredentialScalarFieldEnum | CredentialScalarFieldEnum[]
+  }
+
+  /**
+   * Credential findMany
+   */
+  export type CredentialFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter, which Credentials to fetch.
+     */
+    where?: CredentialWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Credentials to fetch.
+     */
+    orderBy?: CredentialOrderByWithRelationInput | CredentialOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Credentials.
+     */
+    cursor?: CredentialWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Credentials from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Credentials.
+     */
+    skip?: number
+    distinct?: CredentialScalarFieldEnum | CredentialScalarFieldEnum[]
+  }
+
+  /**
+   * Credential create
+   */
+  export type CredentialCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Credential.
+     */
+    data: XOR<CredentialCreateInput, CredentialUncheckedCreateInput>
+  }
+
+  /**
+   * Credential createMany
+   */
+  export type CredentialCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Credentials.
+     */
+    data: CredentialCreateManyInput | CredentialCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Credential createManyAndReturn
+   */
+  export type CredentialCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * The data used to create many Credentials.
+     */
+    data: CredentialCreateManyInput | CredentialCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Credential update
+   */
+  export type CredentialUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Credential.
+     */
+    data: XOR<CredentialUpdateInput, CredentialUncheckedUpdateInput>
+    /**
+     * Choose, which Credential to update.
+     */
+    where: CredentialWhereUniqueInput
+  }
+
+  /**
+   * Credential updateMany
+   */
+  export type CredentialUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Credentials.
+     */
+    data: XOR<CredentialUpdateManyMutationInput, CredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which Credentials to update
+     */
+    where?: CredentialWhereInput
+    /**
+     * Limit how many Credentials to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Credential updateManyAndReturn
+   */
+  export type CredentialUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * The data used to update Credentials.
+     */
+    data: XOR<CredentialUpdateManyMutationInput, CredentialUncheckedUpdateManyInput>
+    /**
+     * Filter which Credentials to update
+     */
+    where?: CredentialWhereInput
+    /**
+     * Limit how many Credentials to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Credential upsert
+   */
+  export type CredentialUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Credential to update in case it exists.
+     */
+    where: CredentialWhereUniqueInput
+    /**
+     * In case the Credential found by the `where` argument doesn't exist, create a new Credential with this data.
+     */
+    create: XOR<CredentialCreateInput, CredentialUncheckedCreateInput>
+    /**
+     * In case the Credential was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CredentialUpdateInput, CredentialUncheckedUpdateInput>
+  }
+
+  /**
+   * Credential delete
+   */
+  export type CredentialDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+    /**
+     * Filter which Credential to delete.
+     */
+    where: CredentialWhereUniqueInput
+  }
+
+  /**
+   * Credential deleteMany
+   */
+  export type CredentialDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Credentials to delete
+     */
+    where?: CredentialWhereInput
+    /**
+     * Limit how many Credentials to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Credential.Node
+   */
+  export type Credential$NodeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Node
+     */
+    select?: NodeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Node
+     */
+    omit?: NodeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NodeInclude<ExtArgs> | null
+    where?: NodeWhereInput
+    orderBy?: NodeOrderByWithRelationInput | NodeOrderByWithRelationInput[]
+    cursor?: NodeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NodeScalarFieldEnum | NodeScalarFieldEnum[]
+  }
+
+  /**
+   * Credential without action
+   */
+  export type CredentialDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Credential
+     */
+    select?: CredentialSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Credential
+     */
+    omit?: CredentialOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CredentialInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -10584,7 +11908,8 @@ export namespace Prisma {
     data: 'data',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    workflowId: 'workflowId'
+    workflowId: 'workflowId',
+    credentialId: 'credentialId'
   };
 
   export type NodeScalarFieldEnum = (typeof NodeScalarFieldEnum)[keyof typeof NodeScalarFieldEnum]
@@ -10602,6 +11927,19 @@ export namespace Prisma {
   };
 
   export type ConnectionScalarFieldEnum = (typeof ConnectionScalarFieldEnum)[keyof typeof ConnectionScalarFieldEnum]
+
+
+  export const CredentialScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    value: 'value',
+    type: 'type',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    userId: 'userId'
+  };
+
+  export type CredentialScalarFieldEnum = (typeof CredentialScalarFieldEnum)[keyof typeof CredentialScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -10716,6 +12054,20 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'CredentialType'
+   */
+  export type EnumCredentialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CredentialType'>
+    
+
+
+  /**
+   * Reference to a field of type 'CredentialType[]'
+   */
+  export type ListEnumCredentialTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CredentialType[]'>
     
 
 
@@ -10954,6 +12306,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
     workflows?: WorkflowListRelationFilter
+    credentials?: CredentialListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10966,6 +12319,7 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     workflows?: WorkflowOrderByRelationAggregateInput
+    credentials?: CredentialOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -10981,6 +12335,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
     workflows?: WorkflowListRelationFilter
+    credentials?: CredentialListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -11121,7 +12476,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Node"> | Date | string
     updatedAt?: DateTimeFilter<"Node"> | Date | string
     workflowId?: StringFilter<"Node"> | string
+    credentialId?: StringNullableFilter<"Node"> | string | null
     workflow?: XOR<WorkflowScalarRelationFilter, WorkflowWhereInput>
+    credential?: XOR<CredentialNullableScalarRelationFilter, CredentialWhereInput> | null
     outputConnections?: ConnectionListRelationFilter
     inputConnections?: ConnectionListRelationFilter
   }
@@ -11135,7 +12492,9 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     workflowId?: SortOrder
+    credentialId?: SortOrderInput | SortOrder
     workflow?: WorkflowOrderByWithRelationInput
+    credential?: CredentialOrderByWithRelationInput
     outputConnections?: ConnectionOrderByRelationAggregateInput
     inputConnections?: ConnectionOrderByRelationAggregateInput
   }
@@ -11152,7 +12511,9 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Node"> | Date | string
     updatedAt?: DateTimeFilter<"Node"> | Date | string
     workflowId?: StringFilter<"Node"> | string
+    credentialId?: StringNullableFilter<"Node"> | string | null
     workflow?: XOR<WorkflowScalarRelationFilter, WorkflowWhereInput>
+    credential?: XOR<CredentialNullableScalarRelationFilter, CredentialWhereInput> | null
     outputConnections?: ConnectionListRelationFilter
     inputConnections?: ConnectionListRelationFilter
   }, "id">
@@ -11166,6 +12527,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     workflowId?: SortOrder
+    credentialId?: SortOrderInput | SortOrder
     _count?: NodeCountOrderByAggregateInput
     _max?: NodeMaxOrderByAggregateInput
     _min?: NodeMinOrderByAggregateInput
@@ -11183,6 +12545,7 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Node"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Node"> | Date | string
     workflowId?: StringWithAggregatesFilter<"Node"> | string
+    credentialId?: StringNullableWithAggregatesFilter<"Node"> | string | null
   }
 
   export type ConnectionWhereInput = {
@@ -11260,6 +12623,74 @@ export namespace Prisma {
     toInput?: StringWithAggregatesFilter<"Connection"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Connection"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Connection"> | Date | string
+  }
+
+  export type CredentialWhereInput = {
+    AND?: CredentialWhereInput | CredentialWhereInput[]
+    OR?: CredentialWhereInput[]
+    NOT?: CredentialWhereInput | CredentialWhereInput[]
+    id?: StringFilter<"Credential"> | string
+    name?: StringFilter<"Credential"> | string
+    value?: StringFilter<"Credential"> | string
+    type?: EnumCredentialTypeFilter<"Credential"> | $Enums.CredentialType
+    createdAt?: DateTimeFilter<"Credential"> | Date | string
+    updatedAt?: DateTimeFilter<"Credential"> | Date | string
+    userId?: StringFilter<"Credential"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Node?: NodeListRelationFilter
+  }
+
+  export type CredentialOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
+    Node?: NodeOrderByRelationAggregateInput
+  }
+
+  export type CredentialWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CredentialWhereInput | CredentialWhereInput[]
+    OR?: CredentialWhereInput[]
+    NOT?: CredentialWhereInput | CredentialWhereInput[]
+    name?: StringFilter<"Credential"> | string
+    value?: StringFilter<"Credential"> | string
+    type?: EnumCredentialTypeFilter<"Credential"> | $Enums.CredentialType
+    createdAt?: DateTimeFilter<"Credential"> | Date | string
+    updatedAt?: DateTimeFilter<"Credential"> | Date | string
+    userId?: StringFilter<"Credential"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    Node?: NodeListRelationFilter
+  }, "id">
+
+  export type CredentialOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+    _count?: CredentialCountOrderByAggregateInput
+    _max?: CredentialMaxOrderByAggregateInput
+    _min?: CredentialMinOrderByAggregateInput
+  }
+
+  export type CredentialScalarWhereWithAggregatesInput = {
+    AND?: CredentialScalarWhereWithAggregatesInput | CredentialScalarWhereWithAggregatesInput[]
+    OR?: CredentialScalarWhereWithAggregatesInput[]
+    NOT?: CredentialScalarWhereWithAggregatesInput | CredentialScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Credential"> | string
+    name?: StringWithAggregatesFilter<"Credential"> | string
+    value?: StringWithAggregatesFilter<"Credential"> | string
+    type?: EnumCredentialTypeWithAggregatesFilter<"Credential"> | $Enums.CredentialType
+    createdAt?: DateTimeWithAggregatesFilter<"Credential"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Credential"> | Date | string
+    userId?: StringWithAggregatesFilter<"Credential"> | string
   }
 
   export type PostCreateInput = {
@@ -11483,6 +12914,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowCreateNestedManyWithoutUserInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11495,6 +12927,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutUserInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11507,6 +12940,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11519,6 +12953,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11659,6 +13094,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflow: WorkflowCreateNestedOneWithoutNodesInput
+    credential?: CredentialCreateNestedOneWithoutNodeInput
     outputConnections?: ConnectionCreateNestedManyWithoutFromNodeInput
     inputConnections?: ConnectionCreateNestedManyWithoutToNodeInput
   }
@@ -11672,6 +13108,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflowId: string
+    credentialId?: string | null
     outputConnections?: ConnectionUncheckedCreateNestedManyWithoutFromNodeInput
     inputConnections?: ConnectionUncheckedCreateNestedManyWithoutToNodeInput
   }
@@ -11685,6 +13122,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflow?: WorkflowUpdateOneRequiredWithoutNodesNestedInput
+    credential?: CredentialUpdateOneWithoutNodeNestedInput
     outputConnections?: ConnectionUpdateManyWithoutFromNodeNestedInput
     inputConnections?: ConnectionUpdateManyWithoutToNodeNestedInput
   }
@@ -11698,6 +13136,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflowId?: StringFieldUpdateOperationsInput | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
     outputConnections?: ConnectionUncheckedUpdateManyWithoutFromNodeNestedInput
     inputConnections?: ConnectionUncheckedUpdateManyWithoutToNodeNestedInput
   }
@@ -11711,6 +13150,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflowId: string
+    credentialId?: string | null
   }
 
   export type NodeUpdateManyMutationInput = {
@@ -11732,6 +13172,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflowId?: StringFieldUpdateOperationsInput | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ConnectionCreateInput = {
@@ -11806,6 +13247,79 @@ export namespace Prisma {
     toInput?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CredentialCreateInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCredentialsInput
+    Node?: NodeCreateNestedManyWithoutCredentialInput
+  }
+
+  export type CredentialUncheckedCreateInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    Node?: NodeUncheckedCreateNestedManyWithoutCredentialInput
+  }
+
+  export type CredentialUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCredentialsNestedInput
+    Node?: NodeUpdateManyWithoutCredentialNestedInput
+  }
+
+  export type CredentialUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    Node?: NodeUncheckedUpdateManyWithoutCredentialNestedInput
+  }
+
+  export type CredentialCreateManyInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+  }
+
+  export type CredentialUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CredentialUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -12114,6 +13628,12 @@ export namespace Prisma {
     none?: WorkflowWhereInput
   }
 
+  export type CredentialListRelationFilter = {
+    every?: CredentialWhereInput
+    some?: CredentialWhereInput
+    none?: CredentialWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -12127,6 +13647,10 @@ export namespace Prisma {
   }
 
   export type WorkflowOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CredentialOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -12270,6 +13794,11 @@ export namespace Prisma {
     isNot?: WorkflowWhereInput
   }
 
+  export type CredentialNullableScalarRelationFilter = {
+    is?: CredentialWhereInput | null
+    isNot?: CredentialWhereInput | null
+  }
+
   export type NodeCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -12279,6 +13808,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     workflowId?: SortOrder
+    credentialId?: SortOrder
   }
 
   export type NodeMaxOrderByAggregateInput = {
@@ -12288,6 +13818,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     workflowId?: SortOrder
+    credentialId?: SortOrder
   }
 
   export type NodeMinOrderByAggregateInput = {
@@ -12297,6 +13828,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     workflowId?: SortOrder
+    credentialId?: SortOrder
   }
 
   export type EnumNodeTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -12378,6 +13910,53 @@ export namespace Prisma {
     toInput?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type EnumCredentialTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CredentialType | EnumCredentialTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCredentialTypeFilter<$PrismaModel> | $Enums.CredentialType
+  }
+
+  export type CredentialCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type CredentialMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type CredentialMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    value?: SortOrder
+    type?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type EnumCredentialTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CredentialType | EnumCredentialTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCredentialTypeWithAggregatesFilter<$PrismaModel> | $Enums.CredentialType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCredentialTypeFilter<$PrismaModel>
+    _max?: NestedEnumCredentialTypeFilter<$PrismaModel>
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
@@ -12478,6 +14057,13 @@ export namespace Prisma {
     connect?: WorkflowWhereUniqueInput | WorkflowWhereUniqueInput[]
   }
 
+  export type CredentialCreateNestedManyWithoutUserInput = {
+    create?: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput> | CredentialCreateWithoutUserInput[] | CredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CredentialCreateOrConnectWithoutUserInput | CredentialCreateOrConnectWithoutUserInput[]
+    createMany?: CredentialCreateManyUserInputEnvelope
+    connect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -12504,6 +14090,13 @@ export namespace Prisma {
     connectOrCreate?: WorkflowCreateOrConnectWithoutUserInput | WorkflowCreateOrConnectWithoutUserInput[]
     createMany?: WorkflowCreateManyUserInputEnvelope
     connect?: WorkflowWhereUniqueInput | WorkflowWhereUniqueInput[]
+  }
+
+  export type CredentialUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput> | CredentialCreateWithoutUserInput[] | CredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CredentialCreateOrConnectWithoutUserInput | CredentialCreateOrConnectWithoutUserInput[]
+    createMany?: CredentialCreateManyUserInputEnvelope
+    connect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -12566,6 +14159,20 @@ export namespace Prisma {
     deleteMany?: WorkflowScalarWhereInput | WorkflowScalarWhereInput[]
   }
 
+  export type CredentialUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput> | CredentialCreateWithoutUserInput[] | CredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CredentialCreateOrConnectWithoutUserInput | CredentialCreateOrConnectWithoutUserInput[]
+    upsert?: CredentialUpsertWithWhereUniqueWithoutUserInput | CredentialUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CredentialCreateManyUserInputEnvelope
+    set?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    disconnect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    delete?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    connect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    update?: CredentialUpdateWithWhereUniqueWithoutUserInput | CredentialUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CredentialUpdateManyWithWhereWithoutUserInput | CredentialUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CredentialScalarWhereInput | CredentialScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -12620,6 +14227,20 @@ export namespace Prisma {
     update?: WorkflowUpdateWithWhereUniqueWithoutUserInput | WorkflowUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: WorkflowUpdateManyWithWhereWithoutUserInput | WorkflowUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: WorkflowScalarWhereInput | WorkflowScalarWhereInput[]
+  }
+
+  export type CredentialUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput> | CredentialCreateWithoutUserInput[] | CredentialUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CredentialCreateOrConnectWithoutUserInput | CredentialCreateOrConnectWithoutUserInput[]
+    upsert?: CredentialUpsertWithWhereUniqueWithoutUserInput | CredentialUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CredentialCreateManyUserInputEnvelope
+    set?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    disconnect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    delete?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    connect?: CredentialWhereUniqueInput | CredentialWhereUniqueInput[]
+    update?: CredentialUpdateWithWhereUniqueWithoutUserInput | CredentialUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CredentialUpdateManyWithWhereWithoutUserInput | CredentialUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CredentialScalarWhereInput | CredentialScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutWorkflowsInput = {
@@ -12726,6 +14347,12 @@ export namespace Prisma {
     connect?: WorkflowWhereUniqueInput
   }
 
+  export type CredentialCreateNestedOneWithoutNodeInput = {
+    create?: XOR<CredentialCreateWithoutNodeInput, CredentialUncheckedCreateWithoutNodeInput>
+    connectOrCreate?: CredentialCreateOrConnectWithoutNodeInput
+    connect?: CredentialWhereUniqueInput
+  }
+
   export type ConnectionCreateNestedManyWithoutFromNodeInput = {
     create?: XOR<ConnectionCreateWithoutFromNodeInput, ConnectionUncheckedCreateWithoutFromNodeInput> | ConnectionCreateWithoutFromNodeInput[] | ConnectionUncheckedCreateWithoutFromNodeInput[]
     connectOrCreate?: ConnectionCreateOrConnectWithoutFromNodeInput | ConnectionCreateOrConnectWithoutFromNodeInput[]
@@ -12764,6 +14391,16 @@ export namespace Prisma {
     upsert?: WorkflowUpsertWithoutNodesInput
     connect?: WorkflowWhereUniqueInput
     update?: XOR<XOR<WorkflowUpdateToOneWithWhereWithoutNodesInput, WorkflowUpdateWithoutNodesInput>, WorkflowUncheckedUpdateWithoutNodesInput>
+  }
+
+  export type CredentialUpdateOneWithoutNodeNestedInput = {
+    create?: XOR<CredentialCreateWithoutNodeInput, CredentialUncheckedCreateWithoutNodeInput>
+    connectOrCreate?: CredentialCreateOrConnectWithoutNodeInput
+    upsert?: CredentialUpsertWithoutNodeInput
+    disconnect?: CredentialWhereInput | boolean
+    delete?: CredentialWhereInput | boolean
+    connect?: CredentialWhereUniqueInput
+    update?: XOR<XOR<CredentialUpdateToOneWithWhereWithoutNodeInput, CredentialUpdateWithoutNodeInput>, CredentialUncheckedUpdateWithoutNodeInput>
   }
 
   export type ConnectionUpdateManyWithoutFromNodeNestedInput = {
@@ -12862,6 +14499,66 @@ export namespace Prisma {
     upsert?: WorkflowUpsertWithoutConnectionsInput
     connect?: WorkflowWhereUniqueInput
     update?: XOR<XOR<WorkflowUpdateToOneWithWhereWithoutConnectionsInput, WorkflowUpdateWithoutConnectionsInput>, WorkflowUncheckedUpdateWithoutConnectionsInput>
+  }
+
+  export type UserCreateNestedOneWithoutCredentialsInput = {
+    create?: XOR<UserCreateWithoutCredentialsInput, UserUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCredentialsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type NodeCreateNestedManyWithoutCredentialInput = {
+    create?: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput> | NodeCreateWithoutCredentialInput[] | NodeUncheckedCreateWithoutCredentialInput[]
+    connectOrCreate?: NodeCreateOrConnectWithoutCredentialInput | NodeCreateOrConnectWithoutCredentialInput[]
+    createMany?: NodeCreateManyCredentialInputEnvelope
+    connect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+  }
+
+  export type NodeUncheckedCreateNestedManyWithoutCredentialInput = {
+    create?: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput> | NodeCreateWithoutCredentialInput[] | NodeUncheckedCreateWithoutCredentialInput[]
+    connectOrCreate?: NodeCreateOrConnectWithoutCredentialInput | NodeCreateOrConnectWithoutCredentialInput[]
+    createMany?: NodeCreateManyCredentialInputEnvelope
+    connect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+  }
+
+  export type EnumCredentialTypeFieldUpdateOperationsInput = {
+    set?: $Enums.CredentialType
+  }
+
+  export type UserUpdateOneRequiredWithoutCredentialsNestedInput = {
+    create?: XOR<UserCreateWithoutCredentialsInput, UserUncheckedCreateWithoutCredentialsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCredentialsInput
+    upsert?: UserUpsertWithoutCredentialsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCredentialsInput, UserUpdateWithoutCredentialsInput>, UserUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type NodeUpdateManyWithoutCredentialNestedInput = {
+    create?: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput> | NodeCreateWithoutCredentialInput[] | NodeUncheckedCreateWithoutCredentialInput[]
+    connectOrCreate?: NodeCreateOrConnectWithoutCredentialInput | NodeCreateOrConnectWithoutCredentialInput[]
+    upsert?: NodeUpsertWithWhereUniqueWithoutCredentialInput | NodeUpsertWithWhereUniqueWithoutCredentialInput[]
+    createMany?: NodeCreateManyCredentialInputEnvelope
+    set?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    disconnect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    delete?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    connect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    update?: NodeUpdateWithWhereUniqueWithoutCredentialInput | NodeUpdateWithWhereUniqueWithoutCredentialInput[]
+    updateMany?: NodeUpdateManyWithWhereWithoutCredentialInput | NodeUpdateManyWithWhereWithoutCredentialInput[]
+    deleteMany?: NodeScalarWhereInput | NodeScalarWhereInput[]
+  }
+
+  export type NodeUncheckedUpdateManyWithoutCredentialNestedInput = {
+    create?: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput> | NodeCreateWithoutCredentialInput[] | NodeUncheckedCreateWithoutCredentialInput[]
+    connectOrCreate?: NodeCreateOrConnectWithoutCredentialInput | NodeCreateOrConnectWithoutCredentialInput[]
+    upsert?: NodeUpsertWithWhereUniqueWithoutCredentialInput | NodeUpsertWithWhereUniqueWithoutCredentialInput[]
+    createMany?: NodeCreateManyCredentialInputEnvelope
+    set?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    disconnect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    delete?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    connect?: NodeWhereUniqueInput | NodeWhereUniqueInput[]
+    update?: NodeUpdateWithWhereUniqueWithoutCredentialInput | NodeUpdateWithWhereUniqueWithoutCredentialInput[]
+    updateMany?: NodeUpdateManyWithWhereWithoutCredentialInput | NodeUpdateManyWithWhereWithoutCredentialInput[]
+    deleteMany?: NodeScalarWhereInput | NodeScalarWhereInput[]
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -13092,6 +14789,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumCredentialTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.CredentialType | EnumCredentialTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCredentialTypeFilter<$PrismaModel> | $Enums.CredentialType
+  }
+
+  export type NestedEnumCredentialTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CredentialType | EnumCredentialTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.CredentialType[] | ListEnumCredentialTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumCredentialTypeWithAggregatesFilter<$PrismaModel> | $Enums.CredentialType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumCredentialTypeFilter<$PrismaModel>
+    _max?: NestedEnumCredentialTypeFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutPostsInput = {
     id?: string
     name?: string | null
@@ -13101,6 +14815,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     workflows?: WorkflowCreateNestedManyWithoutUserInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -13112,6 +14827,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutUserInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -13139,6 +14855,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     workflows?: WorkflowUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -13150,6 +14867,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -13161,6 +14879,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowCreateNestedManyWithoutUserInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -13172,6 +14891,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutUserInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -13199,6 +14919,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -13210,6 +14931,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -13221,6 +14943,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowCreateNestedManyWithoutUserInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -13232,6 +14955,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     workflows?: WorkflowUncheckedCreateNestedManyWithoutUserInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -13259,6 +14983,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -13270,6 +14995,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     workflows?: WorkflowUncheckedUpdateManyWithoutUserNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -13382,6 +15108,36 @@ export namespace Prisma {
 
   export type WorkflowCreateManyUserInputEnvelope = {
     data: WorkflowCreateManyUserInput | WorkflowCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CredentialCreateWithoutUserInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Node?: NodeCreateNestedManyWithoutCredentialInput
+  }
+
+  export type CredentialUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    Node?: NodeUncheckedCreateNestedManyWithoutCredentialInput
+  }
+
+  export type CredentialCreateOrConnectWithoutUserInput = {
+    where: CredentialWhereUniqueInput
+    create: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput>
+  }
+
+  export type CredentialCreateManyUserInputEnvelope = {
+    data: CredentialCreateManyUserInput | CredentialCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -13500,6 +15256,35 @@ export namespace Prisma {
     userId?: StringFilter<"Workflow"> | string
   }
 
+  export type CredentialUpsertWithWhereUniqueWithoutUserInput = {
+    where: CredentialWhereUniqueInput
+    update: XOR<CredentialUpdateWithoutUserInput, CredentialUncheckedUpdateWithoutUserInput>
+    create: XOR<CredentialCreateWithoutUserInput, CredentialUncheckedCreateWithoutUserInput>
+  }
+
+  export type CredentialUpdateWithWhereUniqueWithoutUserInput = {
+    where: CredentialWhereUniqueInput
+    data: XOR<CredentialUpdateWithoutUserInput, CredentialUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CredentialUpdateManyWithWhereWithoutUserInput = {
+    where: CredentialScalarWhereInput
+    data: XOR<CredentialUpdateManyMutationInput, CredentialUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type CredentialScalarWhereInput = {
+    AND?: CredentialScalarWhereInput | CredentialScalarWhereInput[]
+    OR?: CredentialScalarWhereInput[]
+    NOT?: CredentialScalarWhereInput | CredentialScalarWhereInput[]
+    id?: StringFilter<"Credential"> | string
+    name?: StringFilter<"Credential"> | string
+    value?: StringFilter<"Credential"> | string
+    type?: EnumCredentialTypeFilter<"Credential"> | $Enums.CredentialType
+    createdAt?: DateTimeFilter<"Credential"> | Date | string
+    updatedAt?: DateTimeFilter<"Credential"> | Date | string
+    userId?: StringFilter<"Credential"> | string
+  }
+
   export type UserCreateWithoutWorkflowsInput = {
     id?: string
     name?: string | null
@@ -13509,6 +15294,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    credentials?: CredentialCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutWorkflowsInput = {
@@ -13520,6 +15306,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    credentials?: CredentialUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutWorkflowsInput = {
@@ -13535,6 +15322,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    credential?: CredentialCreateNestedOneWithoutNodeInput
     outputConnections?: ConnectionCreateNestedManyWithoutFromNodeInput
     inputConnections?: ConnectionCreateNestedManyWithoutToNodeInput
   }
@@ -13547,6 +15335,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    credentialId?: string | null
     outputConnections?: ConnectionUncheckedCreateNestedManyWithoutFromNodeInput
     inputConnections?: ConnectionUncheckedCreateNestedManyWithoutToNodeInput
   }
@@ -13611,6 +15400,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    credentials?: CredentialUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutWorkflowsInput = {
@@ -13622,6 +15412,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    credentials?: CredentialUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type NodeUpsertWithWhereUniqueWithoutWorkflowInput = {
@@ -13652,6 +15443,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Node"> | Date | string
     updatedAt?: DateTimeFilter<"Node"> | Date | string
     workflowId?: StringFilter<"Node"> | string
+    credentialId?: StringNullableFilter<"Node"> | string | null
   }
 
   export type ConnectionUpsertWithWhereUniqueWithoutWorkflowInput = {
@@ -13705,6 +15497,31 @@ export namespace Prisma {
   export type WorkflowCreateOrConnectWithoutNodesInput = {
     where: WorkflowWhereUniqueInput
     create: XOR<WorkflowCreateWithoutNodesInput, WorkflowUncheckedCreateWithoutNodesInput>
+  }
+
+  export type CredentialCreateWithoutNodeInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCredentialsInput
+  }
+
+  export type CredentialUncheckedCreateWithoutNodeInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+  }
+
+  export type CredentialCreateOrConnectWithoutNodeInput = {
+    where: CredentialWhereUniqueInput
+    create: XOR<CredentialCreateWithoutNodeInput, CredentialUncheckedCreateWithoutNodeInput>
   }
 
   export type ConnectionCreateWithoutFromNodeInput = {
@@ -13796,6 +15613,37 @@ export namespace Prisma {
     connections?: ConnectionUncheckedUpdateManyWithoutWorkflowNestedInput
   }
 
+  export type CredentialUpsertWithoutNodeInput = {
+    update: XOR<CredentialUpdateWithoutNodeInput, CredentialUncheckedUpdateWithoutNodeInput>
+    create: XOR<CredentialCreateWithoutNodeInput, CredentialUncheckedCreateWithoutNodeInput>
+    where?: CredentialWhereInput
+  }
+
+  export type CredentialUpdateToOneWithWhereWithoutNodeInput = {
+    where?: CredentialWhereInput
+    data: XOR<CredentialUpdateWithoutNodeInput, CredentialUncheckedUpdateWithoutNodeInput>
+  }
+
+  export type CredentialUpdateWithoutNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCredentialsNestedInput
+  }
+
+  export type CredentialUncheckedUpdateWithoutNodeInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type ConnectionUpsertWithWhereUniqueWithoutFromNodeInput = {
     where: ConnectionWhereUniqueInput
     update: XOR<ConnectionUpdateWithoutFromNodeInput, ConnectionUncheckedUpdateWithoutFromNodeInput>
@@ -13837,6 +15685,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflow: WorkflowCreateNestedOneWithoutNodesInput
+    credential?: CredentialCreateNestedOneWithoutNodeInput
     inputConnections?: ConnectionCreateNestedManyWithoutToNodeInput
   }
 
@@ -13849,6 +15698,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflowId: string
+    credentialId?: string | null
     inputConnections?: ConnectionUncheckedCreateNestedManyWithoutToNodeInput
   }
 
@@ -13866,6 +15716,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflow: WorkflowCreateNestedOneWithoutNodesInput
+    credential?: CredentialCreateNestedOneWithoutNodeInput
     outputConnections?: ConnectionCreateNestedManyWithoutFromNodeInput
   }
 
@@ -13878,6 +15729,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     workflowId: string
+    credentialId?: string | null
     outputConnections?: ConnectionUncheckedCreateNestedManyWithoutFromNodeInput
   }
 
@@ -13929,6 +15781,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflow?: WorkflowUpdateOneRequiredWithoutNodesNestedInput
+    credential?: CredentialUpdateOneWithoutNodeNestedInput
     inputConnections?: ConnectionUpdateManyWithoutToNodeNestedInput
   }
 
@@ -13941,6 +15794,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflowId?: StringFieldUpdateOperationsInput | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
     inputConnections?: ConnectionUncheckedUpdateManyWithoutToNodeNestedInput
   }
 
@@ -13964,6 +15818,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflow?: WorkflowUpdateOneRequiredWithoutNodesNestedInput
+    credential?: CredentialUpdateOneWithoutNodeNestedInput
     outputConnections?: ConnectionUpdateManyWithoutFromNodeNestedInput
   }
 
@@ -13976,6 +15831,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     workflowId?: StringFieldUpdateOperationsInput | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
     outputConnections?: ConnectionUncheckedUpdateManyWithoutFromNodeNestedInput
   }
 
@@ -14006,6 +15862,122 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     userId?: StringFieldUpdateOperationsInput | string
     nodes?: NodeUncheckedUpdateManyWithoutWorkflowNestedInput
+  }
+
+  export type UserCreateWithoutCredentialsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    workflows?: WorkflowCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCredentialsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    workflows?: WorkflowUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCredentialsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCredentialsInput, UserUncheckedCreateWithoutCredentialsInput>
+  }
+
+  export type NodeCreateWithoutCredentialInput = {
+    id?: string
+    name: string
+    type: $Enums.NodeType
+    position: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workflow: WorkflowCreateNestedOneWithoutNodesInput
+    outputConnections?: ConnectionCreateNestedManyWithoutFromNodeInput
+    inputConnections?: ConnectionCreateNestedManyWithoutToNodeInput
+  }
+
+  export type NodeUncheckedCreateWithoutCredentialInput = {
+    id?: string
+    name: string
+    type: $Enums.NodeType
+    position: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workflowId: string
+    outputConnections?: ConnectionUncheckedCreateNestedManyWithoutFromNodeInput
+    inputConnections?: ConnectionUncheckedCreateNestedManyWithoutToNodeInput
+  }
+
+  export type NodeCreateOrConnectWithoutCredentialInput = {
+    where: NodeWhereUniqueInput
+    create: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput>
+  }
+
+  export type NodeCreateManyCredentialInputEnvelope = {
+    data: NodeCreateManyCredentialInput | NodeCreateManyCredentialInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutCredentialsInput = {
+    update: XOR<UserUpdateWithoutCredentialsInput, UserUncheckedUpdateWithoutCredentialsInput>
+    create: XOR<UserCreateWithoutCredentialsInput, UserUncheckedCreateWithoutCredentialsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCredentialsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCredentialsInput, UserUncheckedUpdateWithoutCredentialsInput>
+  }
+
+  export type UserUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    workflows?: WorkflowUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCredentialsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    workflows?: WorkflowUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type NodeUpsertWithWhereUniqueWithoutCredentialInput = {
+    where: NodeWhereUniqueInput
+    update: XOR<NodeUpdateWithoutCredentialInput, NodeUncheckedUpdateWithoutCredentialInput>
+    create: XOR<NodeCreateWithoutCredentialInput, NodeUncheckedCreateWithoutCredentialInput>
+  }
+
+  export type NodeUpdateWithWhereUniqueWithoutCredentialInput = {
+    where: NodeWhereUniqueInput
+    data: XOR<NodeUpdateWithoutCredentialInput, NodeUncheckedUpdateWithoutCredentialInput>
+  }
+
+  export type NodeUpdateManyWithWhereWithoutCredentialInput = {
+    where: NodeScalarWhereInput
+    data: XOR<NodeUpdateManyMutationInput, NodeUncheckedUpdateManyWithoutCredentialInput>
   }
 
   export type AccountCreateManyUserInput = {
@@ -14039,6 +16011,15 @@ export namespace Prisma {
   export type WorkflowCreateManyUserInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CredentialCreateManyUserInput = {
+    id?: string
+    name: string
+    value: string
+    type: $Enums.CredentialType
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14151,6 +16132,35 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CredentialUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Node?: NodeUpdateManyWithoutCredentialNestedInput
+  }
+
+  export type CredentialUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Node?: NodeUncheckedUpdateManyWithoutCredentialNestedInput
+  }
+
+  export type CredentialUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: EnumCredentialTypeFieldUpdateOperationsInput | $Enums.CredentialType
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type NodeCreateManyWorkflowInput = {
     id?: string
     name: string
@@ -14159,6 +16169,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
+    credentialId?: string | null
   }
 
   export type ConnectionCreateManyWorkflowInput = {
@@ -14179,6 +16190,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credential?: CredentialUpdateOneWithoutNodeNestedInput
     outputConnections?: ConnectionUpdateManyWithoutFromNodeNestedInput
     inputConnections?: ConnectionUpdateManyWithoutToNodeNestedInput
   }
@@ -14191,6 +16203,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
     outputConnections?: ConnectionUncheckedUpdateManyWithoutFromNodeNestedInput
     inputConnections?: ConnectionUncheckedUpdateManyWithoutToNodeNestedInput
   }
@@ -14203,6 +16216,7 @@ export namespace Prisma {
     data?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    credentialId?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ConnectionUpdateWithoutWorkflowInput = {
@@ -14313,6 +16327,54 @@ export namespace Prisma {
     toInput?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NodeCreateManyCredentialInput = {
+    id?: string
+    name: string
+    type: $Enums.NodeType
+    position: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    workflowId: string
+  }
+
+  export type NodeUpdateWithoutCredentialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType
+    position?: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workflow?: WorkflowUpdateOneRequiredWithoutNodesNestedInput
+    outputConnections?: ConnectionUpdateManyWithoutFromNodeNestedInput
+    inputConnections?: ConnectionUpdateManyWithoutToNodeNestedInput
+  }
+
+  export type NodeUncheckedUpdateWithoutCredentialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType
+    position?: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workflowId?: StringFieldUpdateOperationsInput | string
+    outputConnections?: ConnectionUncheckedUpdateManyWithoutFromNodeNestedInput
+    inputConnections?: ConnectionUncheckedUpdateManyWithoutToNodeNestedInput
+  }
+
+  export type NodeUncheckedUpdateManyWithoutCredentialInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    type?: EnumNodeTypeFieldUpdateOperationsInput | $Enums.NodeType
+    position?: JsonNullValueInput | InputJsonValue
+    data?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    workflowId?: StringFieldUpdateOperationsInput | string
   }
 
 

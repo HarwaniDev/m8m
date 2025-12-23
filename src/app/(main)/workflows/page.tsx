@@ -1,18 +1,19 @@
 "use client"
-import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { Plus } from "lucide-react";
-import WorkflowEntity from "~/components/ui/custom/workflow-entity";
+import { Workflow } from "lucide-react";
+import EntityComponent from "~/components/ui/custom/entity-component";
 import { toast } from "sonner";
 import { useState } from "react";
 import Link from "next/link";
 import { LoaderThree } from "~/components/ui/loader";
 import EmptyState from "~/components/ui/custom/empty-state";
+import { formatDistanceToNow } from "date-fns";
+import { EntityHeader } from "~/components/ui/custom/entity-header";
 
 const WorkflowComponent = () => {
     const utils = api.useUtils();
 
-    // TODO:- add loading and error component
+    // TODO:- add authentication check
     const { data, isLoading, isError, error } = api.workflow.getMany.useQuery({});
     const [isDisabled, setIsDisabled] = useState(false);
     const createWorkflow = api.workflow.create.useMutation({
@@ -56,29 +57,27 @@ const WorkflowComponent = () => {
         return (
             <EmptyState
                 title="No workflows found"
-                message="Create a workflow now to start you automation journey." />                
+                message="Create a workflow now to start you automation journey." />
         )
     }
 
     return (
         <div className="flex w-full flex-col gap-8 px-4 pb-10 pt-6 lg:px-8">
-            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <p className="text-2xl font-bold text-foreground">Workflows</p>
-                    <p className="text-base font-medium text-muted-foreground">Create and manage your workflows</p>
-                </div>
-                <Button variant="default" disabled={isDisabled} className="flex w-full items-center justify-center gap-2 rounded-lg border border-black bg-blue-600 font-semibold text-white shadow-lg hover:bg-blue-500 sm:w-auto"
-                    onClick={() => createWorkflow.mutate()}>
-                    <Plus /> New workflow
-                </Button>
-            </div>
+            <EntityHeader
+                title="Workflows"
+                description="Create and manage your workflows"
+                onNew={() => createWorkflow.mutate()}
+                buttonTitle="New workflow"
+                disabled={isDisabled}
+            />
             <div className="flex w-full flex-col gap-4">
-                {data?.map((workflow, idx) => (
+                {data.map((workflow, idx) => (
                     <Link href={`/workflows/${workflow.id}`} key={idx}>
-                        <WorkflowEntity
+                        <EntityComponent
                             name={workflow.name}
-                            createdAt={workflow.createdAt}
-                            updatedAt={workflow.updatedAt}
+                            createdAt={formatDistanceToNow(workflow.createdAt)}
+                            updatedAt={formatDistanceToNow(workflow.updatedAt)}
+                            Icon={Workflow}
                             onDelete={() => { }}
                         />
                     </Link>
