@@ -43,6 +43,18 @@ const executionNodes: NodeTypeOption[] = [
         label: "Gemini",
         description: "Use the Gemini model",
         icon: "/gemini.svg"
+    },
+    {
+        type: NodeType.DISCORD,
+        label: "Discord",
+        description: "Use the Discord node to send messages",
+        icon: "/discord.svg"
+    },
+    {
+        type: NodeType.TELEGRAM,
+        label: "Telegram",
+        description: "Use the Telegram node to send messages",
+        icon: "/telegram.svg"
     }
 ]
 
