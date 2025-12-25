@@ -183,7 +183,7 @@ export function AppSidebar({
                                                     {user.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase() || "U"}
                                                 </AvatarFallback>
                                             </Avatar>
-                                            <div className="grid flex-1 text-left text-sm leading-tight">
+                                            <div className="grid flex-1 text-left font-semibold text-sm leading-tight">
                                                 <span className="truncate font-heading">
                                                     {user.name || "User"}
                                                 </span>
@@ -196,7 +196,9 @@ export function AppSidebar({
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => signOut()}>
                                         <LogOut />
-                                        Sign out
+                                        <span className="font-semibold">
+                                            Sign out
+                                        </span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
