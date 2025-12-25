@@ -7,14 +7,24 @@ import { httpRequestChannel } from "./channels/http-request";
 import { manualTriggerRequestChannel } from "./channels/manual-trigger";
 import { googleFormTriggerRequestChannel } from "./channels/google-form-trigger";
 import { geminiRequestChannel } from "./channels/gemini";
+import { discordRequestChannel } from "./channels/discord";
+import { githubRequestChannel } from "./channels/github";
 
 export const executeWorkflow = inngest.createFunction(
-  { id: "execute-workflow", 
+  {
+    id: "execute-workflow",
     retries: 0 // TODO: REMOVE THIS LINE IN PRODUCTION
-    },
+  },
   {
     event: "workflows/execute.workflow",
-    channels: [httpRequestChannel(), manualTriggerRequestChannel(), googleFormTriggerRequestChannel(), geminiRequestChannel()]
+    channels: [
+      httpRequestChannel(),
+      manualTriggerRequestChannel(),
+      googleFormTriggerRequestChannel(),
+      geminiRequestChannel(),
+      discordRequestChannel(),
+      githubRequestChannel()
+    ]
   },
   async ({ event, step, publish }) => {
     const workflowId = event.data.workflowId;
@@ -35,6 +45,18 @@ export const executeWorkflow = inngest.createFunction(
       return topologicalSort(workflow.nodes, workflow.connections);
     });
 
+    const userId = await step.run("find-user-id", async () => {
+      const workflow = await db.workflow.findUniqueOrThrow({
+        where: {
+          id: workflowId
+        },
+        select: {
+          userId: true
+        }
+      });
+      return workflow.userId;
+    });
+
     let context = event.data.initialData || {};
 
     // execute each node
@@ -43,6 +65,7 @@ export const executeWorkflow = inngest.createFunction(
       context = await executor({
         data: node.data as Record<string, unknown>,
         nodeId: node.id,
+        userId,
         context,
         step,
         publish
