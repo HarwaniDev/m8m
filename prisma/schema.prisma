@@ -136,6 +136,7 @@ model Credential {
 
 enum CredentialType {
     GEMINI
+    TELEGRAM
 }
 
 enum NodeType {
@@ -144,4 +145,6 @@ enum NodeType {
     MANUAL_TRIGGER
     GOOGLE_FORM_TRIGGER
     GEMINI
+    DISCORD
+    TELEGRAM
 }
