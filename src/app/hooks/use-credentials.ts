@@ -81,5 +81,5 @@ export const useUpdateCredential = () => {
 };
 
 export const useCredentialsByType = (type: CredentialType) => {
-    return api.credential.getbyType.useSuspenseQuery({ type });
+    return api.credential.getbyType.useQuery({ type });
 };
