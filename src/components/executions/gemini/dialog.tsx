@@ -5,15 +5,20 @@ import { Dialog, DialogHeader, DialogContent, DialogTitle, DialogDescription, Di
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "~/components/ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
+import { useCredentialsByType } from "~/app/hooks/use-credentials";
+import { CredentialType } from "generated/prisma";
+import { Select } from "@radix-ui/react-select";
+import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import Image from "next/image";
 
 const formSchema = z.object({
     variableName: z.string().min(1, { message: "Variable name is required" }).regex(/^[A-Za-z_$][A_Za-z0-9_$]*$/, {
         message: "Variable name must start with a letter or underscore and should contain only letters, numbers and underscores"
     }),
+    credentialId: z.string().min(1, "Credential is required"),
     systemPrompt: z.string().optional(),
     userPrompt: z.string().min(1, { message: "User prompt can't be empty" })
 })
@@ -23,6 +28,7 @@ interface Props {
     onOpenChange: (open: boolean) => void;
     onSubmit: (values: z.infer<typeof formSchema>) => void;
     defaultSystemPrompt?: string;
+    defaultCredentialId?: string;
     defaultUserPrompt?: string;
     defaultVariableName?: string;
 };
@@ -32,14 +38,16 @@ export const GeminiDialog = ({
     onOpenChange,
     onSubmit,
     defaultVariableName = "",
+    defaultCredentialId = "",
     defaultSystemPrompt = "",
     defaultUserPrompt = ""
 }: Props) => {
-
+    const { data: credentials, isLoading } = useCredentialsByType(CredentialType.GEMINI);
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             variableName: defaultVariableName,
+            credentialId: defaultCredentialId,
             systemPrompt: defaultSystemPrompt,
             userPrompt: defaultUserPrompt
         }
@@ -50,7 +58,6 @@ export const GeminiDialog = ({
         onSubmit(values);
         onOpenChange(false);
     }
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="rounded-lg border-black shadow-xl max-h-[90vh] overflow-y-auto">
@@ -83,6 +90,41 @@ export const GeminiDialog = ({
                                     <FormDescription className="text-muted-foreground">
                                         Use this name to reference the result in other nodes: {`{{${watchVariableName}.text}}`}
                                     </FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        >
+                        </FormField>
+                        <FormField
+                            control={form.control}
+                            name="credentialId"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Type</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        defaultValue={field.value}
+                                        disabled={isLoading || !credentials?.length}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger className=" border-2 cursor-pointer data-[state=open]:border-blue-600">
+                                                <SelectValue placeholder={"Select a credential"} />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent className="bg-white rounded-lg">
+                                            {credentials?.map((option) => (
+                                                <SelectItem
+                                                    key={option.id}
+                                                    value={option.id}
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <Image src={"/gemini.svg"} alt={option.name} height={16} width={16} />
+                                                        {option.name}
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}

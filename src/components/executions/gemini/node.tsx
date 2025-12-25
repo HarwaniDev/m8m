@@ -9,6 +9,7 @@ import { fetchGeminiFunctionRealtimeToken } from "./actions";
 
 type GeminiNodeData = {
     variableName?: string;
+    credentialId?: string;
     systemPrompt?: string;
     userPrompt?: string;
 };
@@ -23,6 +24,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
     const handleSubmit = (
         values: {
             model?: string;
+            credentialId?: string;
             systemPrompt?: string;
             userPrompt?: string;
             variableName?: string;
@@ -48,8 +50,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
         refreshToken: fetchGeminiFunctionRealtimeToken
     })
     const nodeData = props.data;
-    // const description = (nodeData.endpoint && nodeData.variableName) ? `${nodeData.variableName}: ${nodeData.endpoint} `
-    //     : "Not configured";
+    const description = (nodeData.variableName && nodeData.userPrompt) ? `${nodeData.variableName}: ${nodeData.userPrompt?.slice(0,20)}` : "Not configured";
 
     return (
         <>
@@ -58,6 +59,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
                 onOpenChange={setDialogOpen}
                 onSubmit={handleSubmit}
                 defaultSystemPrompt={nodeData.systemPrompt}
+                defaultCredentialId={nodeData.credentialId}
                 defaultUserPrompt={nodeData.userPrompt}
                 defaultVariableName={nodeData.variableName}
             />
@@ -67,7 +69,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
                 id={props.id}
                 icon={"/gemini.svg"}
                 name="Gemini"
-                description={""}
+                description={description}
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
                 status={nodeStatus}
