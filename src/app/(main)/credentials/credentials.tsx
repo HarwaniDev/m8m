@@ -1,6 +1,5 @@
 "use client"
 
-import { CreditCard } from "lucide-react";
 import { useRemoveCredential, useSuspenseCredentials } from "~/app/hooks/use-credentials"
 import EntityComponent from "~/components/ui/custom/entity-component";
 import { EntityHeader } from "~/components/ui/custom/entity-header";
@@ -16,7 +15,8 @@ export const CredentialsList = () => {
     const removeCredential = useRemoveCredential();
 
     const logo: Record<CredentialType, string> = {
-        [CredentialType.GEMINI]: "/gemini.svg"
+        [CredentialType.GEMINI]: "/gemini.svg",
+        [CredentialType.TELEGRAM]: "/telegram.svg"
     };
 
     return (

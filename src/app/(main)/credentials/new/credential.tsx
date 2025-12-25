@@ -38,11 +38,11 @@ const credentialsTypeOptions = [
         logo: "/gemini.svg"
     },
     // TODO: complete below
-    // {
-    //     value: CredentialType.OPENAI,
-    //     label: "OPENAI",
-    //     logo: "/OPENAI.svg"
-    // },
+    {
+        value: CredentialType.TELEGRAM,
+        label: "TELEGRAM",
+        logo: "/telegram.svg"
+    }
     // {
     //     value: CredentialType.ANTHROPIC,
     //     label: "Anthropic",
@@ -89,7 +89,7 @@ export const CredentialForm = ({ initialData }: CredentialFormProps) => {
                     {isEdit ? "Edit credential" : "Create credential"}
                 </CardTitle>
                 <CardDescription>
-                    {isEdit ? "Update your API key or credential details" : "Add a new API key or credential to your account"}
+                    {isEdit ? "Update your API key, credential details or bot token here" : "Add a new API key, credential or bot token"}
                 </CardDescription>
             </CardHeader>
             <CardContent>
