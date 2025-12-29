@@ -1,11 +1,22 @@
-const ExecutionComponent = () => {
+import { Suspense } from "react";
+import { HydrateClient } from "~/trpc/server";
+import { ExecutionsList } from "./executions";
+import { prefetchExecutions } from "./prefetch";
+import { ErrorBoundary } from "react-error-boundary"
+import { LoaderThree } from "~/components/ui/loader";
+const CredentialComponent = async () => {
+    prefetchExecutions();
+
     return (
-        <div className="flex flex-col justify-center items-center gap-48 p-4 m-4 pt-0">
-            <span className="font-bold text-4xl">Executions</span>
-            <p>Execution content goes here</p>
-        </div>
+        <HydrateClient>
+            <ErrorBoundary fallback={<>error...</>}>
+                <Suspense fallback={<div className="flex items-center justify-center h-full"> <LoaderThree /> </div>}>
+                    <ExecutionsList />
+                </Suspense>
+            </ErrorBoundary>
+        </HydrateClient>
     )
 }
 
 
-export default ExecutionComponent;
+export default CredentialComponent;
