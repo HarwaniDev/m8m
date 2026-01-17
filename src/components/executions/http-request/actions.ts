@@ -6,13 +6,13 @@ import { inngest } from "~/inngest/client";
 
 export type httpRequestToken = Realtime.Token<
 typeof httpRequestChannel,
-["status"]
+["status", "result"]
 >;
 
 export async function fetchHttpFunctionRealtimeToken(): Promise<httpRequestToken> {
     const token = await getSubscriptionToken(inngest, {
         channel: httpRequestChannel(),
-        topics: ["status"]
+        topics: ["status", "result"]
     });
     return token;
 }

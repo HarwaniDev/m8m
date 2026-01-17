@@ -13,6 +13,8 @@ import { CredentialType } from "generated/prisma";
 import { Select } from "@radix-ui/react-select";
 import { SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 import Image from "next/image";
+import { useState } from "react";
+import { cn } from "~/lib/utils";
 
 const formSchema = z.object({
     variableName: z.string().min(1, { message: "Variable name is required" }).regex(/^[A-Za-z_$][A_Za-z0-9_$]*$/, {
@@ -31,6 +33,7 @@ interface Props {
     defaultCredentialId?: string;
     defaultUserPrompt?: string;
     defaultVariableName?: string;
+    result?: unknown;
 };
 
 export const GeminiDialog = ({
@@ -40,9 +43,11 @@ export const GeminiDialog = ({
     defaultVariableName = "",
     defaultCredentialId = "",
     defaultSystemPrompt = "",
-    defaultUserPrompt = ""
+    defaultUserPrompt = "",
+    result
 }: Props) => {
     const { data: credentials, isLoading } = useCredentialsByType(CredentialType.GEMINI);
+    const [activeTab, setActiveTab] = useState<"configuration" | "result">("configuration");
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -58,6 +63,27 @@ export const GeminiDialog = ({
         onSubmit(values);
         onOpenChange(false);
     }
+
+    const formatResult = (result: unknown): string => {
+        if (result === null || result === undefined) {
+            return "";
+        }
+        if (typeof result === "string") {
+            return result;
+        }
+        if (typeof result === "object") {
+            try {
+                return JSON.stringify(result, null, 2);
+            } catch {
+                return String(result);
+            }
+        }
+        return String(result);
+    };
+
+    const resultText = result ? formatResult(result) : "";
+    const hasResult = result !== null && result !== undefined;
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="rounded-lg border-black shadow-xl max-h-[90vh] overflow-y-auto">
@@ -67,10 +93,44 @@ export const GeminiDialog = ({
                     </DialogTitle>
                     <DialogDescription>
                         Configure settings for the Gemini node. <br />
-                        TODO:- update the scrollbar, request body placeholder and body description
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...form}>
+                
+                {/* Tab Header */}
+                <div className="flex border-b mt-4">
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab("configuration")}
+                        className={cn(
+                            "flex-1 px-4 py-2 text-sm font-medium transition-colors",
+                            "border-b-2 border-transparent",
+                            activeTab === "configuration"
+                                ? "border-blue-600 text-blue-600 bg-blue-50"
+                                : "text-muted-foreground hover:text-foreground"
+                        )}
+                    >
+                        Configuration
+                    </button>
+                    {hasResult && (
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab("result")}
+                            className={cn(
+                                "flex-1 px-4 py-2 text-sm font-medium transition-colors",
+                                "border-b-2 border-transparent",
+                                activeTab === "result"
+                                    ? "border-blue-600 text-blue-600 bg-blue-50"
+                                    : "text-muted-foreground hover:text-foreground"
+                            )}
+                        >
+                            Result
+                        </button>
+                    )}
+                </div>
+
+                {/* Tab Content */}
+                {activeTab === "configuration" && (
+                    <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmit)}
                         className="space-y-8 mt-4"
@@ -189,6 +249,18 @@ export const GeminiDialog = ({
                         </DialogFooter>
                     </form>
                 </Form>
+                )}
+
+                {activeTab === "result" && hasResult && (
+                    <div className="mt-4 space-y-4">
+                        <div className="text-sm font-semibold text-muted-foreground">Execution Result:</div>
+                        <div className="bg-muted rounded border p-4 max-h-96 overflow-y-auto">
+                            <pre className="text-xs font-mono whitespace-pre-wrap break-words">
+                                {resultText}
+                            </pre>
+                        </div>
+                    </div>
+                )}
             </DialogContent>
         </Dialog>
     )

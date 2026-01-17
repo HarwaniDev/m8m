@@ -1,6 +1,6 @@
 "use client"
 
-import { CopyIcon } from "lucide-react";
+import { Copy, CopyIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
@@ -69,16 +69,36 @@ export const GoogleFormTriggerDialog = ({ open, onOpenChange }: Props) => {
                                 <CopyIcon className="size-4" />
                             </Button>
                         </div>
-                        TODO: add steps
-                        <div className="flex gap-2">
-                            <Button
-                                type="button"
-                                onClick={copyAppsScript}
-                                className="border-gray-400 rounded-lg cursor-pointer"
-                            >
-                                Copy Apps Script
-                            </Button>
+                        <div className="mt-4 bg-gray-100 rounded-lg ">
+                            <span className="text-sm font-semibold mx-4 ">
+                                Setup instructions:
+                            </span>
+                            <ol className="text-sm text-black/50 mx-4 p-2 list-decimal list-inside">
+                                <li> Open your google form </li>
+                                <li> Click three dot menu → Script editor </li>
+                                <li> Copy and paste the script below </li>
+                                <li> Replace WEBHOOK_URL with your webhook URL above </li>
+                                <li> Save and click "Triggers" → Add trigger </li>
+                                <li> Choose: From form → On form submit → Save </li>
+                            </ol>
                         </div>
+                        <div className="mt-4 bg-gray-100 rounded-lg ">
+                            <span className="text-sm font-semibold mx-4 ">
+                                Available variables:
+                            </span>
+                            <p className="text-sm text-black/50 mx-4 p-2">
+                                {"{{googleForm.respondentEmail}}"} → Respondent's email <br />
+                                {"{{googleForm.responses[`Question Name`]}}"} → Specific answer <br />
+                                {"{{json googleForm.responses}}"} → All responses as JSON <br />
+                            </p>
+                        </div>
+                        <Button
+                            type="button"
+                            onClick={copyAppsScript}
+                            className="border-gray-400 bg-white mt-4 rounded-lg cursor-pointer"
+                        >
+                            <Copy className="size-5" />Copy Google Apps Script
+                        </Button>
                     </div>
                 </div>
             </DialogContent>

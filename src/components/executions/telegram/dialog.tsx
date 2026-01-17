@@ -66,7 +66,6 @@ export const TelegramDialog = ({
                     </DialogTitle>
                     <DialogDescription>
                         Configure settings for the Telegram node. <br />
-                        TODO:- update the scrollbar, request body placeholder and body description
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -103,7 +102,7 @@ export const TelegramDialog = ({
                                     <Select
                                         onValueChange={field.onChange}
                                         defaultValue={field.value}
-                                    disabled={isLoading || !credentials?.length}
+                                        disabled={isLoading || !credentials?.length}
                                     >
                                         <FormControl>
                                             <SelectTrigger className=" border-2 cursor-pointer data-[state=open]:border-blue-600">
@@ -141,6 +140,9 @@ export const TelegramDialog = ({
                                         className="focus:border-blue-600 border-3"
                                     >
                                     </Input>
+                                    <FormDescription className="text-muted-foreground">
+                                        The steps to attain chat ID are provided below
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -167,6 +169,16 @@ export const TelegramDialog = ({
                             )}
                         >
                         </FormField>
+                        <div className="bg-gray-100 rounded-lg">
+                            <h4 className="text-sm font-semibold p-2">Instructions: </h4>
+                            <ol className="list-decimal list-inside text-sm mx-2 p-1 text-black/50">
+                                <li> Create a bot via @BotFather </li>
+                                <li> Add token as credential </li>
+                                <li> Add the bot to the chat and send a message </li>
+                                <li> Open https://api.telegram.org/bot{"<TOKEN>"}/getUpdates </li>
+                                <li> Copy message.chat.id and put in the chat ID </li>
+                            </ol>
+                        </div>
                         <DialogFooter className="mt-4">
                             <Button type="submit" className="border-black text-white bg-blue-600 rounded-lg font-semibold cursor-pointer">
                                 Save

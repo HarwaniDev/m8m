@@ -12,7 +12,7 @@ export default function EmptyState({
   icon 
 }: EmptyStateProps) {
   return (
-    <div className='flex items-center justify-center h-full'>
+    <div className='flex flex-1 items-center justify-center'>
       <div className='text-center'>
         <div className='flex justify-center mb-4'>
           {icon || <AlertCircle className='h-12 w-12 text-muted-foreground' />}

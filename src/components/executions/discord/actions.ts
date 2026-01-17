@@ -6,13 +6,13 @@ import { inngest } from "~/inngest/client";
 
 export type discordToken = Realtime.Token<
     typeof discordRequestChannel,
-    ["status"]
+    ["status", "result"]
 >;
 
 export async function fetchDiscordFunctionRealtimeToken(): Promise<discordToken> {
     const token = await getSubscriptionToken(inngest, {
         channel: discordRequestChannel(),
-        topics: ["status"]
+        topics: ["status", "result"]
     });
     return token;
 }

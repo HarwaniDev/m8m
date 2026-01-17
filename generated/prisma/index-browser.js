@@ -207,12 +207,29 @@ exports.Prisma.CredentialScalarFieldEnum = {
   userId: 'userId'
 };
 
+exports.Prisma.ExecutionScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  startedAt: 'startedAt',
+  completedAt: 'completedAt',
+  inngestEventId: 'inngestEventId',
+  output: 'output',
+  status: 'status',
+  error: 'error',
+  errorStack: 'errorStack'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
 };
 
 exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -236,11 +253,25 @@ exports.NodeType = exports.$Enums.NodeType = {
   HTTP_REQUEST: 'HTTP_REQUEST',
   MANUAL_TRIGGER: 'MANUAL_TRIGGER',
   GOOGLE_FORM_TRIGGER: 'GOOGLE_FORM_TRIGGER',
-  GEMINI: 'GEMINI'
+  GEMINI: 'GEMINI',
+  DISCORD: 'DISCORD',
+  TELEGRAM: 'TELEGRAM',
+  GITHUB: 'GITHUB',
+  OPENAI: 'OPENAI',
+  ANTHROPIC: 'ANTHROPIC'
 };
 
 exports.CredentialType = exports.$Enums.CredentialType = {
-  GEMINI: 'GEMINI'
+  GEMINI: 'GEMINI',
+  TELEGRAM: 'TELEGRAM',
+  OPENAI: 'OPENAI',
+  ANTHROPIC: 'ANTHROPIC'
+};
+
+exports.ExecutionStatus = exports.$Enums.ExecutionStatus = {
+  RUNNING: 'RUNNING',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED'
 };
 
 exports.Prisma.ModelName = {
@@ -252,7 +283,8 @@ exports.Prisma.ModelName = {
   Workflow: 'Workflow',
   Node: 'Node',
   Connection: 'Connection',
-  Credential: 'Credential'
+  Credential: 'Credential',
+  Execution: 'Execution'
 };
 
 /**

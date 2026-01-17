@@ -82,18 +82,25 @@ export const DiscordExecutor: NodeExecutor<DiscordData> = async ({
                 method: "POST",
                 data: payload,
             });
+            const result = {
+                ...context,
+                [data.variableName]: {
+                    messageContent: content.slice(0, 2000)
+                }
+            };
             await publish(
                 discordRequestChannel().status({
                     nodeId,
                     status: "success"
                 })
             );
-            return {
-                ...context,
-                [data.variableName]: {
-                    messageContent: content.slice(0, 2000)
-                }
-            };
+            await publish(
+                discordRequestChannel().result({
+                    nodeId,
+                    result: result[data.variableName]
+                })
+            );
+            return result;
         });
         return result;
     } catch (error: any) {

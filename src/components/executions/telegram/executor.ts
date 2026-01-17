@@ -4,6 +4,7 @@ import Handlebars from "handlebars";
 import { telegramRequestChannel } from "~/inngest/channels/telegram";
 import axios from "axios";
 import { db } from "~/server/db";
+import { decrypt } from "~/server/encryption";
 
 type TelegramData = {
     variableName?: string;
@@ -80,24 +81,31 @@ export const TelegramExecutor: NodeExecutor<TelegramData> = async ({
                 throw new NonRetriableError("Telegram node: credential is missing");
             }
             const content = Handlebars.compile(data.content)(context).slice(0, 4096);
-            console.log(content);
-            await axios.post(`https://api.telegram.org/bot${credential.value}/sendMessage`, {
+            const credentialValue = decrypt(credential.value);
+            await axios.post(`https://api.telegram.org/bot${credentialValue}/sendMessage`, {
                 chat_id: data.chatId,
                 text: content
             })
 
+            const result = {
+                ...context,
+                [data.variableName]: {
+                    messageContent: content
+                }
+            };
             await publish(
                 telegramRequestChannel().status({
                     nodeId,
                     status: "success"
                 })
             );
-            return {
-                ...context,
-                [data.variableName]: {
-                    messageContent: content
-                }
-            };
+            await publish(
+                telegramRequestChannel().result({
+                    nodeId,
+                    result: result[data.variableName]
+                })
+            );
+            return result;
         });
         return result;
     } catch (error: any) {

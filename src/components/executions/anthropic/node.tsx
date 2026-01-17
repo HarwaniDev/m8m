@@ -1,0 +1,88 @@
+"use client"
+
+import { useReactFlow, type Node, type NodeProps } from "@xyflow/react";
+import { memo, useState } from "react";
+import BaseExecutionNode from "../base-execution-node";
+import { AnthropicDialog } from "./dialog";
+import { useNodeStatus } from "./use-node-status";
+import { useNodeResult } from "../use-node-result";
+import { fetchAnthropicFunctionRealtimeToken } from "./actions";
+
+type AnthropicNodeData = {
+    variableName?: string;
+    credentialId?: string;
+    systemPrompt?: string;
+    userPrompt?: string;
+};
+
+type AnthropicNodeType = Node<AnthropicNodeData>;
+
+export const AnthropicNode = memo((props: NodeProps<AnthropicNodeType>) => {
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const { setNodes } = useReactFlow();
+
+    const handleSubmit = (
+        values: {
+            model?: string;
+            credentialId?: string;
+            systemPrompt?: string;
+            userPrompt?: string;
+            variableName?: string;
+        }
+    ) => {
+        setNodes((nodes) => nodes.map((node) => {
+            if (node.id === props.id) {
+                return {
+                    ...node,
+                    data: {
+                        ...node.data,
+                        ...values
+                    }
+                }
+            }
+            return node;
+        }))
+    }
+    const nodeStatus = useNodeStatus({
+        nodeId: props.id,
+        channel: "anthropic-execution",
+        topic: "status",
+        refreshToken: fetchAnthropicFunctionRealtimeToken
+    })
+    const nodeResult = useNodeResult({
+        nodeId: props.id,
+        channel: "anthropic-execution",
+        topic: "result",
+        refreshToken: fetchAnthropicFunctionRealtimeToken
+    })
+    const nodeData = props.data;
+    const description = (nodeData.variableName && nodeData.userPrompt) ? `${nodeData.variableName}: ${nodeData.userPrompt?.slice(0,20)}` : "Not configured";
+
+    return (
+        <>
+            <AnthropicDialog
+                open={dialogOpen}
+                onOpenChange={setDialogOpen}
+                onSubmit={handleSubmit}
+                defaultSystemPrompt={nodeData.systemPrompt}
+                defaultCredentialId={nodeData.credentialId}
+                defaultUserPrompt={nodeData.userPrompt}
+                defaultVariableName={nodeData.variableName}
+                result={nodeResult}
+            />
+
+            <BaseExecutionNode
+                {...props}
+                id={props.id}
+                icon={"/anthropic.svg"}
+                name="Anthropic"
+                description={description}
+                onSettings={() => setDialogOpen(true)}
+                onDoubleClick={() => setDialogOpen(true)}
+                status={nodeStatus}
+                result={nodeResult}
+            />
+        </>
+    )
+})

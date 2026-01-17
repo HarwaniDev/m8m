@@ -6,6 +6,7 @@ import BaseExecutionNode from "../base-execution-node";
 import { GlobeIcon } from "lucide-react";
 import { HTTPRequestDialog } from "./dialog";
 import { useNodeStatus } from "./use-node-status";
+import { useNodeResult } from "../use-node-result";
 import { fetchHttpFunctionRealtimeToken } from "./actions";
 
 type HTTPRequestNodeData = {
@@ -48,6 +49,12 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
         topic: "status",
         refreshToken: fetchHttpFunctionRealtimeToken
     })
+    const nodeResult = useNodeResult({
+        nodeId: props.id,
+        channel: "http-request-execution",
+        topic: "result",
+        refreshToken: fetchHttpFunctionRealtimeToken
+    })
     const nodeData = props.data;
     const description = (nodeData.endpoint && nodeData.variableName) ? `${nodeData.variableName}: ${nodeData.endpoint} `
         : "Not configured";
@@ -62,6 +69,7 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
                 defaultMethod={nodeData.method}
                 defaultBody={nodeData.body}
                 defaultVariableName={nodeData.variableName}
+                result={nodeResult}
             />
 
             <BaseExecutionNode
@@ -73,6 +81,7 @@ export const HTTPRequestNode = memo((props: NodeProps<HTTPRequestNodeType>) => {
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
                 status={nodeStatus}
+                result={nodeResult}
             />
         </>
     )

@@ -15,6 +15,25 @@ const WorkflowComponent = () => {
 
     // TODO:- add authentication check
     const { data, isLoading, isError, error } = api.workflow.getMany.useQuery({});
+    const removeWorkflow = api.workflow.remove.useMutation({
+        onMutate: () => {
+            const id = toast.loading("Deleting the workflow...")
+            return { toastId: id }
+        },
+
+        onSuccess: (data, _vars, res) => {
+            toast.success(`${data.name} deleted!`, {
+                id: res.toastId
+            });
+            utils.workflow.getMany.invalidate();
+        },
+
+        onError: (error, _vars, res) => {
+            toast.error(`Error deleting the workflow. Please try again later.`, {
+                id: res?.toastId
+            });
+        }
+    })
     const [isDisabled, setIsDisabled] = useState(false);
     const createWorkflow = api.workflow.create.useMutation({
         onMutate: () => {
@@ -55,9 +74,22 @@ const WorkflowComponent = () => {
         )
     } else if (data.length === 0) {
         return (
-            <EmptyState
-                title="No workflows found"
-                message="Create a workflow now to start you automation journey." />
+            <div className="flex min-h-screen flex-col px-4 pb-10 pt-6 lg:px-8">
+                <EntityHeader
+                    title="Workflows"
+                    description="Create and manage your workflows"
+                    onNew={() => createWorkflow.mutate()}
+                    buttonTitle="New workflow"
+                    disabled={isDisabled}
+                />
+
+                <div className="flex flex-1 items-center justify-center">
+                    <EmptyState
+                        title="No workflows found"
+                        message="Create a workflow now to start your automation journey."
+                    />
+                </div>
+            </div>
         )
     }
 
@@ -78,7 +110,11 @@ const WorkflowComponent = () => {
                             createdAt={formatDistanceToNow(workflow.createdAt)}
                             updatedAt={formatDistanceToNow(workflow.updatedAt)}
                             Icon={Workflow}
-                            onDelete={() => { }}
+                            onDelete={(e) => {
+                                e.stopPropagation()
+                                e.preventDefault()
+                                removeWorkflow.mutate({ id: workflow.id })
+                            }}
                         />
                     </Link>
                 ))}

@@ -5,6 +5,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import Handlebars from "handlebars";
 import { geminiRequestChannel } from "~/inngest/channels/gemini";
 import { db } from "~/server/db";
+import { decrypt } from "~/server/encryption";
 
 type GeminiData = {
     variableName?: string;
@@ -48,7 +49,7 @@ export const GeminiExecutor: NodeExecutor<GeminiData> = async ({
         throw new NonRetriableError("Gemini node: Credential not found")
     }
     const google = createGoogleGenerativeAI({
-        apiKey: credential.value
+        apiKey: decrypt(credential.value)
     });
 
     try {
@@ -92,18 +93,26 @@ export const GeminiExecutor: NodeExecutor<GeminiData> = async ({
 
         const text = steps[0]?.content[0]?.type === "text" ? steps[0].content[0].text : "";
 
+        const result = {
+            ...context,
+            [data.variableName]: {
+                text
+            }
+        };
+
         await publish(
             geminiRequestChannel().status({
                 nodeId,
                 status: "success"
             })
         );
-        return {
-            ...context,
-            [data.variableName]: {
-                text
-            }
-        }
+        await publish(
+            geminiRequestChannel().result({
+                nodeId,
+                result: result[data.variableName]
+            })
+        );
+        return result;
     } catch (error) {
         await publish(
             geminiRequestChannel().status({

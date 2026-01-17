@@ -42,12 +42,17 @@ const credentialsTypeOptions = [
         value: CredentialType.TELEGRAM,
         label: "TELEGRAM",
         logo: "/telegram.svg"
+    },
+    {
+        value: CredentialType.OPENAI,
+        label: "OPENAI",
+        logo: "/openai.svg"
+    },
+    {
+        value: CredentialType.ANTHROPIC,
+        label: "ANTHROPIC",
+        logo: "/anthropic.svg"
     }
-    // {
-    //     value: CredentialType.ANTHROPIC,
-    //     label: "Anthropic",
-    //     logo: "/Anthropic.svg"
-    // }
 ]
 export const CredentialForm = ({ initialData }: CredentialFormProps) => {
     const router = useRouter();

@@ -42,7 +42,7 @@ const ExecuteWorkflowButton = ({ workflowId }: { workflowId: string }) => {
         <Button size="lg" type="button" className="border-black bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-500 font-semibold cursor-pointer" onClick={handleExecute} disabled={executeMutation.isPending}>
             <FlaskConicalIcon className="size-4 text-white" />
             Execute Workflow <br />
-            TODO: make sure to handle two inngest calls
+            TODO: add steps for google forms, telegram, discord node
         </Button>
     )
 }

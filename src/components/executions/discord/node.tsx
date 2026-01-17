@@ -4,6 +4,7 @@ import { useReactFlow, type Node, type NodeProps } from "@xyflow/react";
 import { memo, useState } from "react";
 import BaseExecutionNode from "../base-execution-node";
 import { useNodeStatus } from "./use-node-status";
+import { useNodeResult } from "../use-node-result";
 import { DiscordDialog } from "./dialog";
 import { fetchDiscordFunctionRealtimeToken } from "./actions";
 
@@ -49,6 +50,12 @@ export const DiscordNode = memo((props: NodeProps<DiscordNodeType>) => {
         topic: "status",
         refreshToken: fetchDiscordFunctionRealtimeToken
     })
+    const nodeResult = useNodeResult({
+        nodeId: props.id,
+        channel: "discord-execution",
+        topic: "result",
+        refreshToken: fetchDiscordFunctionRealtimeToken
+    })
     const nodeData = props.data;
     const description = (nodeData.variableName && nodeData.content) ? `${nodeData.variableName}: ${nodeData.content.slice(0, 20)} `
         : "Not configured";
@@ -74,6 +81,7 @@ export const DiscordNode = memo((props: NodeProps<DiscordNodeType>) => {
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
                 status={nodeStatus}
+                result={nodeResult}
             />
         </>
     )

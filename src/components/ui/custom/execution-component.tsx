@@ -14,7 +14,7 @@ const ExecutionComponent = ({
     status: string;
     Icon: JSX.Element;
 }) => {
-    const duration = completedAtDate && Math.round(completedAtDate.getTime() - startedAtDate.getTime()) / 1000;
+    const duration = completedAtDate && Math.round((completedAtDate.getTime() - startedAtDate.getTime()) / 1000);
     return (
         <div className="flex w-full flex-col gap-4 rounded-2xl border border-border/60 bg-card/30 p-4 sm:flex-row sm:items-center sm:justify-between cursor-pointer">
             <div className="flex w-full flex-1 items-start gap-4">

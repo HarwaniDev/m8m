@@ -15,6 +15,7 @@ interface BaseExecutionNodeProps extends NodeProps {
     description?: string;
     children?: string;
     status?: NodeStatus;
+    result?: unknown;
     onSettings?: () => void;
     onDoubleClick?: () => void;
 };
@@ -26,10 +27,12 @@ export const BaseExecutionNode = memo(({
     children,
     status = "initial",
     description,
+    result,
     onSettings,
     onDoubleClick
 }: BaseExecutionNodeProps) => {
     const { setNodes, setEdges } = useReactFlow();
+    
     const handleDelete = () => {
         setNodes((currentNodes) => (
             currentNodes.filter((node) => node.id !== id)
@@ -41,6 +44,7 @@ export const BaseExecutionNode = memo(({
             )))
         )
     };
+
     return (
         <WorkflowNode
             name={name}

@@ -28,6 +28,12 @@ const triggerNodes: NodeTypeOption[] = [
         label: "Google Form",
         description: "Runs the flow when google form is submitted",
         icon: "/googleform.svg"
+    },
+    {
+        type: NodeType.GITHUB,
+        label: "Github",
+        description: "Runs the flow when an event occurs on a repository",
+        icon: "/github.svg"
     }
 ]
 
@@ -43,6 +49,18 @@ const executionNodes: NodeTypeOption[] = [
         label: "Gemini",
         description: "Use the Gemini model",
         icon: "/gemini.svg"
+    },
+    {
+        type: NodeType.OPENAI,
+        label: "OpenAI",
+        description: "Use the OpenAI model",
+        icon: "/openai.svg"
+    },
+    {
+        type: NodeType.ANTHROPIC,
+        label: "ANTHROPIC",
+        description: "Use the Anthropic model",
+        icon: "/anthropic.svg"
     },
     {
         type: NodeType.DISCORD,
@@ -109,75 +127,85 @@ const NodeSelector = ({ children, open, setOpen }: { children: ReactNode, open: 
                         Select different types of nodes
                     </SheetDescription>
                 </SheetHeader>
-                {
-                    triggerNodes.map((node) => {
-                        const Icon = node.icon;
-                        return (
-                            <div
-                                key={node.type}
-                                className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent 
+                <div>
+                    <span className="mx-4 text-md font-semibold">
+                        Trigger Nodes
+                    </span>
+                    {
+                        triggerNodes.map((node) => {
+                            const Icon = node.icon;
+                            return (
+                                <div
+                                    key={node.type}
+                                    className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent 
                                 hover:border-l-blue-600"
-                                onClick={() => handleNodeSelect(node)}
-                            >
-                                <div>
-                                    {typeof Icon === "string" ? (
-                                        <div className="flex items-center justify-baseline h-auto">
-                                            <img src={Icon} alt={node.label} className="size-8 mr-7 object-contain rounded-sm" />
-                                            <div className="flex-col">
-                                                <p className="font-semibold">{node.label}</p>
-                                                <p className="font-light text-foreground">{node.description}</p>
+                                    onClick={() => handleNodeSelect(node)}
+                                >
+                                    <div>
+                                        {typeof Icon === "string" ? (
+                                            <div className="flex items-center justify-baseline h-auto">
+                                                <img src={Icon} alt={node.label} className="size-8 mr-7 object-contain rounded-sm" />
+                                                <div className="flex-col">
+                                                    <p className="font-semibold">{node.label}</p>
+                                                    <p className="font-light text-foreground">{node.description}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center justify-baseline h-auto">
-                                            <Icon className="size-8 mr-7" />
-                                            <div className="flex-col">
-                                                <p className="font-semibold">{node.label}</p>
-                                                <p className="font-light text-foreground">{node.description}</p>
+                                        ) : (
+                                            <div className="flex items-center justify-baseline h-auto">
+                                                <Icon className="size-8 mr-7" />
+                                                <div className="flex-col">
+                                                    <p className="font-semibold">{node.label}</p>
+                                                    <p className="font-light text-foreground">{node.description}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        )
-                    })
-                }
-                {
-                    executionNodes.map((node) => {
-                        const Icon = node.icon;
-                        return (
-                            <div
-                                key={node.type}
-                                className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent 
-                                hover:border-l-blue-600"
-                                onClick={() => handleNodeSelect(node)}
-                            >
-                                <div>
-                                    {typeof Icon === "string" ? (
-                                        <div className="flex items-center justify-baseline h-auto">
-                                        <img src={Icon} alt={node.label} className="size-8 mr-7 object-contain rounded-sm" />
-                                        <div className="flex-col">
-                                            <p className="font-semibold">{node.label}</p>
-                                            <p className="font-light text-foreground">{node.description}</p>
-                                        </div>
+                                        )}
                                     </div>
-                                    ) : (
-                                        <div className="flex items-center justify-baseline h-auto">
-                                            <Icon className="size-5 mr-7" />
-                                            <div className="flex-col">
-                                                <p className="font-semibold">{node.label}</p>
-                                                <p className="font-light text-foreground">{node.description}</p>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
-                            </div>
-                        )
-                    })
-                }
+                            )
+                        })
+                    }
+                </div>
+                <div>
+                    <span className="mx-4 text-md font-semibold">
+                        Execution Nodes
+                    </span>
+                    {
+                        executionNodes.map((node) => {
+                            const Icon = node.icon;
+                            return (
+                                <div
+                                    key={node.type}
+                                    className="w-full justify-start h-auto py-5 px-4 rounded-none cursor-pointer border-l-2 border-transparent 
+                                hover:border-l-blue-600"
+                                    onClick={() => handleNodeSelect(node)}
+                                >
+                                    <div>
+                                        {typeof Icon === "string" ? (
+                                            <div className="flex items-center justify-baseline h-auto">
+                                                <img src={Icon} alt={node.label} className="size-8 mr-7 object-contain rounded-sm" />
+                                                <div className="flex-col">
+                                                    <p className="font-semibold">{node.label}</p>
+                                                    <p className="font-light text-foreground">{node.description}</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-baseline h-auto">
+                                                <Icon className="size-5 mr-7" />
+                                                <div className="flex-col">
+                                                    <p className="font-semibold">{node.label}</p>
+                                                    <p className="font-light text-foreground">{node.description}</p>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
                 <SheetFooter>
                     <SheetClose asChild>
-                        <Button variant="neutral" className="cursor-pointer">Close</Button>
+                        <Button variant="neutral" className="cursor-pointer border-black rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-500">Close</Button>
                     </SheetClose>
                 </SheetFooter>
             </SheetContent>

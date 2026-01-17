@@ -1,6 +1,7 @@
 import { workflowRouter } from "~/server/api/routers/workflow";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { credentialRouter } from "./routers/credential";
+import { executionRouter } from "./routers/execution";
 
 /**
  * This is the primary router for your server.
@@ -9,7 +10,8 @@ import { credentialRouter } from "./routers/credential";
  */
 export const appRouter = createTRPCRouter({
   workflow: workflowRouter,
-  credential: credentialRouter
+  credential: credentialRouter,
+  execution: executionRouter
 });
 
 // export type definition of API

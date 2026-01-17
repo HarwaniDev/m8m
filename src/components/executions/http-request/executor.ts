@@ -70,14 +70,19 @@ export const httpRequestExecutor: NodeExecutor<httpRequestData> = async ({
                     data: response.data
                 }
             }
+            const result = {
+                ...context,
+                [data.variableName]: responsePayload
+            };
             await publish(httpRequestChannel().status({
                 nodeId,
                 status: "success"
             }));
-            return {
-                ...context,
-                [data.variableName]: responsePayload
-            }
+            await publish(httpRequestChannel().result({
+                nodeId,
+                result: responsePayload
+            }));
+            return result;
         });
         return result;
     } catch (error) {

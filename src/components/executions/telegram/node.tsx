@@ -4,6 +4,7 @@ import { useReactFlow, type Node, type NodeProps } from "@xyflow/react";
 import { memo, useState } from "react";
 import BaseExecutionNode from "../base-execution-node";
 import { useNodeStatus } from "./use-node-status";
+import { useNodeResult } from "../use-node-result";
 import { TelegramDialog } from "./dialog";
 import { fetchTelegramFunctionRealtimeToken } from "./actions";
 
@@ -49,6 +50,12 @@ export const TelegramNode = memo((props: NodeProps<TelegramNodeType>) => {
         topic: "status",
         refreshToken: fetchTelegramFunctionRealtimeToken
     })
+    const nodeResult = useNodeResult({
+        nodeId: props.id,
+        channel: "telegram-execution",
+        topic: "result",
+        refreshToken: fetchTelegramFunctionRealtimeToken
+    })
     const nodeData = props.data;
     const description = (nodeData.content && nodeData.variableName) ? `${nodeData.variableName}: ${nodeData.content.slice(0, 20)} `
         : "Not configured";
@@ -74,6 +81,7 @@ export const TelegramNode = memo((props: NodeProps<TelegramNodeType>) => {
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
                 status={nodeStatus}
+                result={nodeResult}
             />
         </>
     )

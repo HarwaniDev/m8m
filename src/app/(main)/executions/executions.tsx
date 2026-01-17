@@ -1,7 +1,6 @@
 "use client"
 
-import { useSuspenseExecutions } from "~/app/hooks/use-ecexutions"
-import { EntityHeader } from "~/components/ui/custom/entity-header";
+import { useSuspenseExecutions } from "~/app/hooks/use-executions"
 import { formatDistanceToNow } from "date-fns"
 import EmptyState from "~/components/ui/custom/empty-state";
 import Link from "next/link";
@@ -22,14 +21,16 @@ export const ExecutionsList = () => {
         }
     }
     return (
-        <div className="flex w-full flex-col gap-8 px-4 pb-10 pt-6 lg:px-8">
-            <EntityHeader
-                title="Executions"
-                description="Create and manage your executions"
-                onNew={() => { }}
-                buttonTitle="Add credential"
-            />
-            <div className="flex w-full flex-col gap-4">
+
+        <div className="w-full flex flex-col h-full gap-8 px-4 pb-10 pt-6 lg:px-8">
+            <div className="flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p className="text-2xl font-bold text-foreground">Executions</p>
+                    <p className="text-base font-medium text-muted-foreground">View your workflow execution history</p>
+                </div>
+
+            </div>
+            <div className="flex flex-1 w-full flex-col gap-4">
                 {executions[0].length > 0 ? executions[0].map((execution, idx) => (
                     <Link href={`/executions/${execution.id}`} key={idx}>
                         <ExecutionComponent

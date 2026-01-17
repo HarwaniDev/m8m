@@ -1,6 +1,7 @@
 import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { CredentialType } from "generated/prisma";
+import { encrypt } from "~/server/encryption";
 
 export const credentialRouter = createTRPCRouter({
     create: protectedProcedure
@@ -15,7 +16,7 @@ export const credentialRouter = createTRPCRouter({
                 data: {
                     name,
                     type,
-                    value,
+                    value : encrypt(value),
                     userId: ctx.session.user.id
                 }
             });

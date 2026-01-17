@@ -16,7 +16,9 @@ export const CredentialsList = () => {
 
     const logo: Record<CredentialType, string> = {
         [CredentialType.GEMINI]: "/gemini.svg",
-        [CredentialType.TELEGRAM]: "/telegram.svg"
+        [CredentialType.TELEGRAM]: "/telegram.svg",
+        [CredentialType.OPENAI]: "/openai.svg",
+        [CredentialType.ANTHROPIC]: "/anthropic.svg"
     };
 
     return (

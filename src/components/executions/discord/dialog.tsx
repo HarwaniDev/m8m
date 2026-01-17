@@ -61,7 +61,6 @@ export const DiscordDialog = ({
                     </DialogTitle>
                     <DialogDescription>
                         Configure settings for the Discord node. <br />
-                        TODO:- update the scrollbar, request body placeholder and body description
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -101,6 +100,9 @@ export const DiscordDialog = ({
                                         className="focus:border-blue-600 border-3"
                                     >
                                     </Input>
+                                    <FormDescription className="text-muted-foreground">
+                                        Get this from Discord channel: Settings → Integrations → Webhooks
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -139,6 +141,10 @@ export const DiscordDialog = ({
                                         className="focus:border-blue-600 border-3"
                                     >
                                     </Input>
+                                    <FormDescription className="text-muted-foreground">
+                                        Override the webhook's default username
+                                        (Don't use the word "discord" in bot's name, it is against discord policy)
+                                    </FormDescription>
                                     <FormMessage />
                                 </FormItem>
                             )}

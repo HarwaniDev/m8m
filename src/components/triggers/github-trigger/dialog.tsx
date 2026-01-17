@@ -35,7 +35,7 @@ export const GithubTriggerDialog = ({ open, onOpenChange }: Props) => {
                         Google Form Trigger Configuration
                     </DialogTitle>
                     <DialogDescription>
-                        Use this webhook URL in your Google Form's apps script to trigger this workflow when a form is submitted.
+                        Add this webhook URL to your github repository to trigger this workflow whenever a change is made.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
@@ -60,9 +60,25 @@ export const GithubTriggerDialog = ({ open, onOpenChange }: Props) => {
                                 <CopyIcon className="size-4" />
                             </Button>
                         </div>
-                        TODO: add steps
-                        <div className="flex gap-2">
-                            
+                        
+                        <div className="gap-2 bg-gray-100 p-2 rounded-lg">
+                            <h4 className="text-sm font-semibold">
+                                Setup instructions
+                            </h4>
+                            <ol className="list-decimal list-inside text-sm">
+                                <li>
+                                    Go to Github → Your repository settings → webhooks → Add webhook
+                                </li>
+                                <li>
+                                    In payload URL → Paste the webhook URL provided above
+                                </li>
+                                <li>
+                                    Set Content type to application/json
+                                </li>
+                                <li>
+                                    Select the events for which you want to trigger the webhook
+                                </li>
+                            </ol>
                         </div>
                     </div>
                 </div>

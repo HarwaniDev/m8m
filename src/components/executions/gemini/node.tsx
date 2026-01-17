@@ -5,6 +5,7 @@ import { memo, useState } from "react";
 import BaseExecutionNode from "../base-execution-node";
 import { GeminiDialog } from "./dialog";
 import { useNodeStatus } from "./use-node-status";
+import { useNodeResult } from "../use-node-result";
 import { fetchGeminiFunctionRealtimeToken } from "./actions";
 
 type GeminiNodeData = {
@@ -49,6 +50,12 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
         topic: "status",
         refreshToken: fetchGeminiFunctionRealtimeToken
     })
+    const nodeResult = useNodeResult({
+        nodeId: props.id,
+        channel: "gemini-execution",
+        topic: "result",
+        refreshToken: fetchGeminiFunctionRealtimeToken
+    })
     const nodeData = props.data;
     const description = (nodeData.variableName && nodeData.userPrompt) ? `${nodeData.variableName}: ${nodeData.userPrompt?.slice(0,20)}` : "Not configured";
 
@@ -62,6 +69,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
                 defaultCredentialId={nodeData.credentialId}
                 defaultUserPrompt={nodeData.userPrompt}
                 defaultVariableName={nodeData.variableName}
+                result={nodeResult}
             />
 
             <BaseExecutionNode
@@ -73,6 +81,7 @@ export const GeminiNode = memo((props: NodeProps<GeminiNodeType>) => {
                 onSettings={() => setDialogOpen(true)}
                 onDoubleClick={() => setDialogOpen(true)}
                 status={nodeStatus}
+                result={nodeResult}
             />
         </>
     )

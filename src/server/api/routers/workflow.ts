@@ -45,7 +45,6 @@ export const workflowRouter = createTRPCRouter({
         }
       });
     }),
-  // todo: complete this
   remove: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -57,7 +56,6 @@ export const workflowRouter = createTRPCRouter({
       });
     }),
 
-  // update name of the workflow
   update: protectedProcedure
     .input(z.object({
       id: z.string(),
